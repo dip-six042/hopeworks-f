@@ -13,6 +13,7 @@ import { Notifications } from './pages/Notifications';
 import { DashboardShell } from './pages/dashboards/DashboardShell';
 import { Login } from './pages/Login';
 import { TermsAndPrivacy } from './pages/TermsAndPrivacy';
+import { IdleLogoutGuard } from './components/IdleLogoutGuard';
 import { HowItWorks } from './pages/HowItWorks';
 import { ProjectAvailability } from './pages/ProjectAvailability';
 import { ForgotPassword } from './pages/ForgotPassword';
@@ -337,6 +338,13 @@ function AppContent() {
         : 'min-h-screen justify-between'
     }`}>
       {authLoading && !user && <PulseBeatLoader message="Verifying your session" />}
+
+      <IdleLogoutGuard
+        onSignedOut={() => {
+          setView('login');
+          toast.info('You were signed out because you were inactive for a while.');
+        }}
+      />
 
       {/* NAVBAR */}
       {view !== 'home' && view !== 'dashboard' && view !== 'all_dashboards' && view !== 'login' && view !== 'register' && view !== 'forgot_password' && view !== 'reset_password' && (
