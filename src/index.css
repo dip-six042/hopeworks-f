@@ -296,3 +296,8 @@ html, body, #root {
   animation: hopeworksShine 8s linear infinite;
 }
 
+
+/* Lenis smooth scrolling handles easing itself; native smooth-scroll would fight it. */
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}

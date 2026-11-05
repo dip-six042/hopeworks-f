@@ -85,11 +85,23 @@ const PANEL_TITLES: Record<Exclude<DashboardPanel, 'desk'>, string> = {
 };
 
 function sidebarNavClass(active: boolean) {
-  return `w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer border-l-[3px] ${
+  return `relative isolate w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer border-l-[3px] border-transparent ${
     active
-      ? 'border-[#B24724] bg-[#FFEDD5]/50 text-[#9A3412]'
-      : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+      ? 'text-[#9A3412]'
+      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
   }`;
+}
+
+/** Background that slides between sidebar items (shared layout animation). */
+function SidebarHighlight({ layoutId }: { layoutId: string }) {
+  return (
+    <motion.span
+      layoutId={layoutId}
+      aria-hidden="true"
+      className="absolute inset-0 -z-10 rounded-lg bg-[#FFEDD5]/60 border-l-[3px] border-[#B24724]"
+      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+    />
+  );
 }
 
 function adminSegmentBadgeClass(segment: AdminSegment) {
@@ -490,6 +502,7 @@ export function DashboardShell({
                         onClick={() => goToDesk(tab.id)}
                         className={sidebarNavClass(isActive)}
                       >
+                        {(isActive) && <SidebarHighlight layoutId="sidebar-active" />}
                         <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[#B24724]' : 'text-slate-400'}`} />
                         {tab.label}
                       </button>
@@ -520,6 +533,7 @@ export function DashboardShell({
                       }}
                       className={`${sidebarNavClass(isActive)} justify-between`}
                     >
+                      {(isActive) && <SidebarHighlight layoutId="sidebar-segment" />}
                       <span className="flex items-center gap-2 min-w-0">
                         <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[#B24724]' : 'text-slate-400'}`} />
                         <span className="truncate text-left leading-snug">{item.label}</span>
@@ -556,6 +570,7 @@ export function DashboardShell({
                       }}
                       className={`${sidebarNavClass(isActive)} justify-between`}
                     >
+                      {(isActive) && <SidebarHighlight layoutId="sidebar-segment" />}
                       <span className="flex items-center gap-2 min-w-0">
                         <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[#B24724]' : 'text-slate-400'}`} />
                         <span className="truncate text-left leading-snug">{item.label}</span>
@@ -580,6 +595,7 @@ export function DashboardShell({
               onClick={() => handleDashboardNavigate('explore')}
               className={sidebarNavClass(panel === 'explore')}
             >
+              {(panel === 'explore') && <SidebarHighlight layoutId="sidebar-active" />}
               <Compass className={`h-3.5 w-3.5 shrink-0 ${panel === 'explore' ? 'text-[#B24724]' : 'text-slate-400'}`} />
               Explore Projects
             </button>
@@ -588,6 +604,7 @@ export function DashboardShell({
                 onClick={() => handleDashboardNavigate('create_campaign')}
                 className={sidebarNavClass(panel === 'create_campaign')}
               >
+                {(panel === 'create_campaign') && <SidebarHighlight layoutId="sidebar-active" />}
                 <Plus className={`h-3.5 w-3.5 shrink-0 ${panel === 'create_campaign' ? 'text-[#B24724]' : 'text-slate-400'}`} />
                 Create Campaign
               </button>
@@ -596,6 +613,7 @@ export function DashboardShell({
               onClick={() => handleDashboardNavigate('notifications')}
               className={sidebarNavClass(panel === 'notifications')}
             >
+              {(panel === 'notifications') && <SidebarHighlight layoutId="sidebar-active" />}
               <Bell className={`h-3.5 w-3.5 shrink-0 ${panel === 'notifications' ? 'text-[#B24724]' : 'text-slate-400'}`} />
               Notifications
             </button>
@@ -604,6 +622,7 @@ export function DashboardShell({
                 onClick={() => handleDashboardNavigate('availability')}
                 className={sidebarNavClass(panel === 'availability')}
               >
+                {(panel === 'availability') && <SidebarHighlight layoutId="sidebar-active" />}
                 <Award className={`h-3.5 w-3.5 shrink-0 ${panel === 'availability' ? 'text-[#B24724]' : 'text-slate-400'}`} />
                 My Availability
               </button>
