@@ -116,7 +116,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 {/* Body Text */}
                 <div className="flex-1 min-w-0 pr-2 sm:pr-4 space-y-0.5 text-left">
                   <span className="text-[9px] sm:text-[10px] font-mono tracking-wider opacity-60 uppercase font-bold block">
-                    {t.type} system signal
+                    {({ success: 'Done', error: 'Something went wrong', info: 'Note', warning: 'Heads up' } as Record<string, string>)[t.type] ?? t.type}
                   </span>
                   <p className="text-[11px] sm:text-xs font-sans font-medium leading-snug break-words">
                     {t.message}
