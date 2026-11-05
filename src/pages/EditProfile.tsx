@@ -117,7 +117,7 @@ export function EditProfile() {
         <label className="text-[10px] font-mono text-[#059669] font-bold uppercase tracking-widest leading-none">Security Registry</label>
         <h1 className="text-3xl font-serif font-semibold text-slate-900 tracking-tight">Identity & Profile Preferences</h1>
         <p className="text-xs text-slate-500 max-w-xl">
-          Customize your civic bio and link credentials. Upload identification below to secure high-trust crowdfunding parameters.
+          Update your details. Campaign owners and Project Managers need to upload an ID before they can be verified.
         </p>
       </Reveal>
 
@@ -160,7 +160,7 @@ export function EditProfile() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[11px] text-slate-500 uppercase tracking-wide">Civic Website / Organization Url</label>
+                <label className="text-[11px] text-slate-500 uppercase tracking-wide">Website</label>
                 <input
                   type="text"
                   value={website}

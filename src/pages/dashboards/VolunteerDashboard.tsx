@@ -42,7 +42,7 @@ export function VolunteerDashboard({ onNavigate }: DashboardProps) {
       id: `badge-${app.id}`,
       type: badgeTypeFromProject(app.projectName),
       title: `${badgeTypeFromProject(app.projectName).split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Badge`,
-      description: `Recognized sweat equity contribution to "${app.projectName}".`,
+      description: `Volunteered on "${app.projectName}".`,
       recipientName: user?.name || 'Volunteer',
       recipientRole: 'Volunteer',
       projectName: app.projectName,
@@ -119,10 +119,10 @@ export function VolunteerDashboard({ onNavigate }: DashboardProps) {
                   route={app.skills.slice(0, 2).join(' · ') || 'General volunteer'}
                   metrics={[
                     { label: 'Skills', value: `${app.skills.length} listed` },
-                    { label: 'Shifts', value: `${app.dates.length} dates` },
+                    { label: 'Shifts', value: `${app.dates.length} ${app.dates.length === 1 ? 'date' : 'dates'}` },
                   ]}
                   timeline={app.dates.slice(0, 3).length ? app.dates.slice(0, 3) : ['Applied', 'Review', 'Matched']}
-                  progress={isApproved ? 100 : 35}
+                  progress={isApproved ? 100 : 50}
                   onClick={() => onNavigate('project_detail', app.projectId)}
                 />
               );

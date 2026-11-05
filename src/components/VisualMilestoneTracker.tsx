@@ -111,7 +111,7 @@ export function VisualMilestoneTracker({ project, assignment }: VisualMilestoneT
             Live Trust & Milestone Analytics
           </h3>
           <p className="text-slate-500 text-xs mt-1.5 font-sans leading-relaxed">
-            Real-time synchronization of civic escrow funding targets and independent auditing milestone statuses.
+            Funding and milestone progress for this campaign.
           </p>
         </div>
 
@@ -237,7 +237,7 @@ export function VisualMilestoneTracker({ project, assignment }: VisualMilestoneT
                 : "Secured Escrow"}
             </span>
             <span className="text-[10px] text-slate-400 leading-snug font-sans block">
-              Direct telemetry auditing locks and releases coordinates dynamically.
+              Money is released as each milestone is approved.
             </span>
           </div>
         </div>

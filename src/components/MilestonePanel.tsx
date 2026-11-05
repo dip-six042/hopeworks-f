@@ -459,7 +459,7 @@ export function MilestonePanel({ project, onMilestoneUpdated }: MilestonePanelPr
                   {/* Lock Warning */}
                   <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-2.5 text-xs text-indigo-800">
                     <ShieldAlert className="h-4 w-4 text-indigo-600" />
-                    <span className="font-mono">9.2 Escrow Protocol active: Submitted Evidence is Immutable during pending Audit.</span>
+                    <span className="font-mono">Evidence can't be changed while it's being reviewed.</span>
                   </div>
 
                   {/* Submitted documents */}
@@ -508,7 +508,7 @@ export function MilestonePanel({ project, onMilestoneUpdated }: MilestonePanelPr
                         <label className="block text-[11px] font-mono uppercase tracking-wider text-indigo-900 font-semibold">Auditor Commentary & Revision Requests</label>
                         <textarea
                           rows={2.5}
-                          placeholder="Include clear reasons if requesting revision. If approving, comments will be etched on the ledger."
+                          placeholder="If you're asking for changes, explain what's missing. Comments are visible to the project owner."
                           value={feedback}
                           onChange={(e) => setFeedback(e.target.value)}
                           className="w-full p-3 text-xs bg-white outline-none border border-indigo-200 rounded-xl"

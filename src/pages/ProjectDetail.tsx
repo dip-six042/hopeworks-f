@@ -444,8 +444,8 @@ export function ProjectDetail({
               </div>
 
               <div className="flex justify-between items-baseline font-mono text-[10px] text-slate-400 pt-1 leading-none">
-                <span>{percentRaised}% secure</span>
-                <span>{donations.length} total pledgers</span>
+                <span>{percentRaised}% funded</span>
+                <span>{donations.length} {donations.length === 1 ? 'donation' : 'donations'}</span>
               </div>
             </div>
 
@@ -453,10 +453,10 @@ export function ProjectDetail({
             <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-xl space-y-1">
               <div className="flex items-center gap-1.5 text-slate-800 text-xs font-semibold leading-none">
                 <Users className="h-4 w-4 text-indigo-500" />
-                <span>Sweat Equity Matches: {approvedVolunteers.length} / {project.volunteerSlots}</span>
+                <span>Volunteers: {approvedVolunteers.length} / {project.volunteerSlots}</span>
               </div>
               <p className="text-[10.5px] text-slate-400 font-sans leading-snug">
-                Volunteers seek to offer construction, QA & education skills. Compensated shifts are classified as: <span className="font-semibold">{project.volunteerCompensation}</span>.
+                Volunteer roles on this campaign are <span className="font-semibold">{project.volunteerCompensation === 'paid' ? 'paid' : 'unpaid'}</span>.
               </p>
             </div>
 
@@ -470,13 +470,9 @@ export function ProjectDetail({
                     onClick={handleDonateClick}
                     className="w-full py-3 px-4 text-xs font-mono shadow-sm"
                   >
-                    <Heart className="h-4 w-4 fill-current" /> Donate securely to Escrow
+                    <Heart className="h-4 w-4 fill-current" /> Donate
                   </PillButton>
-                ) : (
-                  <p className="text-[10px] text-slate-500 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-center">
-                    {getActionDeniedMessage('donate')}
-                  </p>
-                )}
+                ) : null}
 
                 {!user || canVolunteer ? (
                   <PillButton
@@ -488,28 +484,28 @@ export function ProjectDetail({
                   >
                     <HeartHandshake className="h-4 w-4" /> Apply to Volunteer
                   </PillButton>
-                ) : (
-                  <p className="text-[10px] text-slate-500 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-center">
-                    {getActionDeniedMessage('volunteer_apply')}
-                  </p>
-                )}
+                ) : null}
               </div>
             ) : (
               <div className="p-3.5 bg-indigo-50/50 border border-indigo-100 rounded-xl text-center text-xs font-mono text-indigo-800 select-all font-semibold">
-                This campaign has completed all active milestones and resolved all escrow allocations.
+                {project.status === 'completed'
+                  ? 'This campaign has completed all of its milestones.'
+                  : project.status === 'pending'
+                    ? 'This campaign is awaiting admin review and is not accepting donations yet.'
+                    : 'This campaign is not accepting donations.'}
               </div>
             )}
 
             {/* Safe Escrow disclosures */}
             <div className="border-t border-slate-100 pt-4 font-mono text-[10px] text-slate-400 space-y-1 leading-relaxed">
               <p className="flex items-center gap-1">
-                <Check className="h-3.5 w-3.5 text-emerald-500" /> Securer escrow protocols active
+                <Check className="h-3.5 w-3.5 text-emerald-500" /> Donations are held in escrow
               </p>
               <p className="flex items-center gap-1">
-                <Check className="h-3.5 w-3.5 text-emerald-500" /> 100% money released sequential on-evidence only
+                <Check className="h-3.5 w-3.5 text-emerald-500" /> Released one milestone at a time, after independent verification
               </p>
               <p className="text-[9px] text-slate-400 font-sans italic pt-1.5 block">
-                Disclosed transparently: A 5% transaction service fee covers regional engineers audits to filter waste.
+                A 5% platform fee covers payment processing, verification and running HopeWorks.
               </p>
             </div>
 

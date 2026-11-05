@@ -183,7 +183,7 @@ export function ResetPassword({ onNavigate }: ResetPasswordProps) {
               onClick={() => onNavigate('login')}
               className="w-full py-3 text-xs font-sans shadow-xs"
             >
-              Go to Login Gateway
+              Go to sign in
             </PillButton>
           </motion.div>
         )}

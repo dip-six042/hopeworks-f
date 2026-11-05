@@ -47,21 +47,21 @@ export function CertificateDownload({ badge, onClose }: CertificateDownloadProps
                 </div>
 
                 <div class="text-3xl font-serif text-emerald-950 font-semibold italic">
-                  Certificate of Civic Honor
+                  Certificate of Thanks
                 </div>
 
                 <div class="text-xs text-slate-400 font-mono">
-                  VERIFIED IDENTIFIER: ${badge.serialNumber}
+                  CERTIFICATE NO: ${badge.serialNumber}
                 </div>
 
                 <div class="w-24 h-[1px] bg-emerald-200" />
 
                 <div class="space-y-1.5 text-slate-600 text-sm max-w-lg leading-relaxed">
-                  This authentic token certifies that
+                  This certifies that
                   <p class="text-xl font-serif font-bold text-slate-900 my-2">${badge.recipientName}</p>
-                  is officially recognized for outstanding sustainable impact contributions as a
+                  contributed as a
                   <span class="font-semibold text-emerald-800"> ${badge.recipientRole} </span>
-                  pledging outstanding energy & resources into the civic milestone campaign:
+                  to the campaign:
                   <p class="font-serif font-semibold text-slate-800 italic mt-1 font-medium select-all">${badge.projectName}</p>
                 </div>
 
@@ -136,7 +136,7 @@ export function CertificateDownload({ badge, onClose }: CertificateDownloadProps
                   UN SDG Compliance - HopeWorks Certification Authority
                 </div>
                 <h2 className="text-2xl font-serif text-emerald-950 font-bold italic tracking-wide">
-                  Certificate of Civic Honor
+                  Certificate of Thanks
                 </h2>
                 <div className="text-[9px] text-slate-400 font-mono tracking-widest">
                   SECURE ID: #{badge.serialNumber}

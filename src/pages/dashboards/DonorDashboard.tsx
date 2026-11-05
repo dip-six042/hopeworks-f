@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { springDashboard } from '../../lib/motion';
 import { useAuth } from '../../context/AuthContext';
 import { useDonationsStore } from '../../hooks/useDonationsStore';
+import { useProjectsStore } from '../../hooks/useProjectsStore';
 import {
   DashboardPageHeader,
   DashboardTabs,
@@ -27,6 +28,17 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
   const { listByDonor } = useDonationsStore();
 
   const myDonations = user ? listByDonor(user.id) : [];
+  const { projects } = useProjectsStore();
+
+  /** Share of a campaign's budget released so far = approved milestone cost / total milestone cost. */
+  const releasedPct = (projectId: string): number => {
+    const project = projects.find((p) => p.id === projectId);
+    const milestones = project?.milestones ?? [];
+    const total = milestones.reduce((sum, m) => sum + Number(m.cost || 0), 0);
+    if (!total) return 0;
+    const released = milestones.filter((m) => m.status === 'approved').reduce((sum, m) => sum + Number(m.cost || 0), 0);
+    return Math.round((released / total) * 100);
+  };
 
   // Total contributions metrics
   const totalContributed = myDonations.reduce((sum, d) => sum + d.amount, 0);
@@ -39,7 +51,7 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
       `"${d.projectName.replace(/"/g, '""')}"`,
       d.amount,
       new Date(d.createdAt).toLocaleDateString(),
-      d.amount >= 1000 ? "Disbursed" : "Locked in Escrow"
+      releasedPct(d.projectId) >= 100 ? "Fully released" : `${releasedPct(d.projectId)}% released`
     ]);
 
     const lines = [
@@ -71,7 +83,7 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
         <td style="padding: 12px; font-weight: 600; color: #1E293B;">${d.projectName}</td>
         <td style="padding: 12px; font-family: monospace; color: #0F172A; text-align: right; font-weight: bold;">$${d.amount.toLocaleString()} USD</td>
         <td style="padding: 12px; text-align: right; font-family: monospace; font-size: 12px; color: #475569;">${new Date(d.createdAt).toLocaleDateString()}</td>
-        <td style="padding: 12px; text-align: right;"><span style="padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: bold; background-color: ${d.amount >= 1000 ? '#DEF7EC' : '#FEE2E2'}; color: ${d.amount >= 1000 ? '#03543F' : '#991B1B'};">${d.amount >= 1000 ? 'DISBURSED' : 'LOCKED ESCROW'}</span></td>
+        <td style="padding: 12px; text-align: right;"><span style="padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: bold; background-color: ${releasedPct(d.projectId) >= 100 ? '#DEF7EC' : '#FEF3C7'}; color: ${releasedPct(d.projectId) >= 100 ? '#03543F' : '#92400E'};">${releasedPct(d.projectId) >= 100 ? 'FULLY RELEASED' : `${releasedPct(d.projectId)}% RELEASED`}</span></td>
       </tr>
     `).join('');
 
@@ -103,8 +115,8 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
             <button onclick="window.print()" style="padding: 6px 14px; background-color: #0F172A; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Save report as PDF</button>
           </div>
           <div class="header">
-            <h1 class="title">Donor Escrow Ledger Statement</h1>
-            <p style="font-size: 11px; color: #64748B; margin-top: 4px; font-family: monospace;">STABLE BACKER LEDGER REPORT : ${user?.name.toUpperCase()}</p>
+            <h1 class="title">Donation statement</h1>
+            <p style="font-size: 11px; color: #64748B; margin-top: 4px; font-family: monospace;">DONOR : ${user?.name.toUpperCase()}</p>
           </div>
           <div class="meta-grid">
             <div>
@@ -120,7 +132,7 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
               <div class="meta-value">${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</div>
             </div>
             <div>
-              <div class="meta-label">Diligence Classification</div>
+              <div class="meta-label">Account</div>
               <div class="meta-value" style="color: #10B981; font-weight: 700;">Registered HopeWorks Contributor</div>
             </div>
           </div>
@@ -170,10 +182,10 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
                           don.id.toLowerCase().includes(searchTerm.toLowerCase());
     
     if (activeSegment === 'locked') {
-      return matchesSearch && don.amount < 1000; // Mock segment separation
+      return matchesSearch && releasedPct(don.projectId) < 100;
     }
     if (activeSegment === 'disbursed') {
-      return matchesSearch && don.amount >= 1000;
+      return matchesSearch && releasedPct(don.projectId) >= 100;
     }
     return matchesSearch;
   });
@@ -193,8 +205,8 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
         onChange={(id) => setActiveSegment(id as typeof activeSegment)}
         tabs={[
           { id: 'all', label: 'All', count: myDonations.length },
-          { id: 'locked', label: 'Locked', count: myDonations.filter((d) => d.amount < 1000).length },
-          { id: 'disbursed', label: 'Disbursed', count: myDonations.filter((d) => d.amount >= 1000).length },
+          { id: 'locked', label: 'In escrow', count: myDonations.filter((d) => releasedPct(d.projectId) < 100).length },
+          { id: 'disbursed', label: 'Fully released', count: myDonations.filter((d) => releasedPct(d.projectId) >= 100).length },
         ]}
       />
 
@@ -216,24 +228,24 @@ export function DonorDashboard({ onNavigate }: DashboardProps) {
         emptyMessage="No pledges yet. Explore projects and make your first contribution."
       >
         {filteredDonations.map((don) => {
-          const isDisbursed = don.amount >= 1000;
-          const progress = Math.min(100, Math.round((don.amount / 5000) * 100));
+          const pct = releasedPct(don.projectId);
+          const isDisbursed = pct >= 100;
 
           return (
             <TrackingCard
               key={don.id}
               status={isDisbursed ? 'completed' : 'pending'}
-              statusLabel={isDisbursed ? 'Disbursed' : 'Locked escrow'}
+              statusLabel={isDisbursed ? 'Fully released' : pct > 0 ? `${pct}% released` : 'Held in escrow'}
               timeLabel={new Date(don.createdAt).toLocaleDateString()}
               code={formatProjectCode(don.id)}
               title={don.projectName}
               route={`Pledge — $${don.amount.toLocaleString()}`}
               metrics={[
                 { label: 'Amount', value: `$${don.amount.toLocaleString()}` },
-                { label: 'Impact score', value: `${Math.min(10, 7 + Math.floor(don.amount / 1000))}/10` },
+                { label: 'Released to project', value: `${pct}%` },
               ]}
-              timeline={['Pledged', 'Escrow locked', isDisbursed ? 'Released' : 'Awaiting milestone']}
-              progress={isDisbursed ? 100 : progress}
+              timeline={['Paid', 'Held in escrow', isDisbursed ? 'Fully released' : pct > 0 ? 'Partly released' : 'Awaiting milestones']}
+              progress={pct}
               onClick={() => onNavigate('project_detail', don.projectId)}
             />
           );

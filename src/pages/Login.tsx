@@ -150,7 +150,7 @@ export function Login({
       return;
     }
     if (roles.length === 0) {
-      setValidationError("At least one civic role must be configured.");
+      setValidationError("Please pick a role.");
       return;
     }
 
@@ -217,7 +217,7 @@ export function Login({
 
   const handleStep4Continue = () => {
     if (roles.length === 0) {
-      setValidationError("Please configure at least one civic role to continue your registration.");
+      setValidationError("Please pick a role to continue.");
       return;
     }
     setValidationError("");
@@ -265,7 +265,7 @@ export function Login({
           >
             <Logo iconSize={30} showText={true} />
             <span className="text-[10px] font-mono tracking-widest text-[#B24724] font-black uppercase border-l border-slate-200 pl-2.5 hidden sm:inline-block">
-              Connection Gateway
+              {wizardStep.startsWith('signup') ? 'Sign up' : 'Sign in'}
             </span>
           </div>
 
@@ -433,10 +433,10 @@ export function Login({
             <div className="space-y-6">
               <div className="space-y-1.5 select-none">
                 <h2 className="text-3xl font-serif font-black text-slate-900 tracking-tight leading-none">
-                  Authorize Credentials
+                  Enter your password
                 </h2>
                 <div className="text-xs text-slate-400">
-                  Securely logging in as: <span className="font-mono text-emerald-800 font-bold">{email}</span>
+                  Signing in as <span className="font-mono text-emerald-800 font-bold">{email}</span>
                 </div>
               </div>
 
@@ -448,7 +448,7 @@ export function Login({
                   <PasswordInput
                     required
                     autoFocus
-                    placeholder="e.g. donor123"
+                    placeholder="Your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full py-3 px-4 border border-slate-200 outline-none rounded-xl focus:border-orange-600 font-sans text-sm transition-colors shadow-sm"
@@ -475,7 +475,7 @@ export function Login({
                   hoveredTextColor="#ffffff"
                   Icon={ArrowRight}
                 >
-                  {loading ? 'Signing in...' : 'Sign In To Terminal'}
+                  {loading ? 'Signing in...' : 'Sign In'}
                 </PillButton>
               </form>
 
@@ -502,10 +502,10 @@ export function Login({
                   Step 2 of {signupStepCount}
                 </span>
                 <h3 className="text-2xl font-serif font-black text-slate-950 tracking-tight">
-                  Let's begin your fundraising journey
+                  Where are you based?
                 </h3>
                 <p className="text-xs text-slate-400">
-                  We're here to guide you every step of the way.
+                  This helps people find projects near them.
                 </p>
               </div>
 
@@ -539,7 +539,7 @@ export function Login({
                       required
                       value={stateRegion}
                       onChange={(e) => setStateRegion(e.target.value)}
-                      placeholder="e.g. Lagos, California, Ontario"
+                      placeholder="e.g. Lagos, Nigeria"
                       className="w-full p-3 border border-slate-200 outline-none rounded-xl text-xs font-semibold text-slate-700 shadow-sm focus:border-emerald-700"
                     />
                   </div>
@@ -612,10 +612,10 @@ export function Login({
                   Step 1 of {signupStepCount}
                 </span>
                 <h3 className="text-2xl font-serif font-black text-slate-950 tracking-tight">
-                  Assign your citizen roles
+                  How will you use HopeWorks?
                 </h3>
                 <p className="text-xs text-slate-400">
-                  Choose one citizen role for your HopeWorks profile.
+                  Pick one. You can ask us to add more later.
                 </p>
               </div>
 
@@ -626,7 +626,7 @@ export function Login({
                     id: 'entrepreneur',
                     title: 'Project Owner',
                     abbr: 'PO',
-                    desc: 'Runs accountable, milestone-based campaigns and recruits volunteers.',
+                    desc: 'Start a campaign and get funded one milestone at a time.',
                     badge: 'PO',
                     activeColor: 'border-[#0B4F35] bg-[#0B4F35]/5',
                     badgeBg: 'bg-[#0B4F35] text-white',
@@ -634,9 +634,9 @@ export function Login({
                   },
                   {
                     id: 'donor',
-                    title: 'Donor / Sponsor',
+                    title: 'Donor',
                     abbr: 'DO',
-                    desc: 'Funds work they can verify, with a full ledger from contribution to delivery.',
+                    desc: 'Give to projects and see exactly where the money goes.',
                     badge: 'DO',
                     activeColor: 'border-[#A9441B] bg-[#A9441B]/5',
                     badgeBg: 'bg-[#A9441B] text-white',
@@ -646,7 +646,7 @@ export function Login({
                     id: 'volunteer',
                     title: 'Volunteer',
                     abbr: 'VO',
-                    desc: 'Contributes time + skills, sets availability, earns verified recognition.',
+                    desc: 'Offer your time and skills to projects near you.',
                     badge: 'VO',
                     activeColor: 'border-[#133863] bg-[#133863]/5',
                     badgeBg: 'bg-[#133863] text-white',
@@ -656,7 +656,7 @@ export function Login({
                     id: 'project_manager',
                     title: 'Project Manager',
                     abbr: 'PM',
-                    desc: 'Independently audits milestone evidence on assigned campaigns and certifies escrow releases.',
+                    desc: 'Review proof for campaigns an admin assigns to you.',
                     badge: 'PM',
                     activeColor: 'border-[#704A0E] bg-[#704A0E]/5',
                     badgeBg: 'bg-[#704A0E] text-white',
@@ -776,7 +776,7 @@ export function Login({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="E.g. Harrison Eldo"
+                    placeholder="Your full name"
                     className="w-full p-3.5 border border-slate-200 outline-none rounded-xl focus:border-emerald-750 text-sm shadow-sm"
                   />
                 </div>
@@ -854,13 +854,13 @@ export function Login({
         <div className="absolute bottom-8 left-8 right-8 bg-black/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 z-20 space-y-2">
           <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[9px] uppercase tracking-widest font-bold">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>UN SDG ESCROW TECHNOLOGY</span>
+            <span>HOW HOPEWORKS WORKS</span>
           </div>
           <h4 className="text-white font-serif italic text-lg leading-snug font-bold">
-            "We fund transparent campaigns matched to UN development milestones, backed by verified third-party PM auditors."
+            Every donation is held and paid out in stages, after someone independent checks the work.
           </h4>
           <span className="block text-[9px] text-[#FAF9F6]/60 font-mono uppercase font-semibold">
-            HopeWorks Foundation Trust Protocol
+            HopeWorks
           </span>
         </div>
 

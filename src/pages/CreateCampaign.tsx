@@ -247,7 +247,7 @@ export function CreateCampaign({ onNavigate }: CreateCampaignProps) {
           <div className="space-y-5">
             <div className="space-y-1">
               <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest block font-bold">Launch Workspace / Step 1</span>
-              <h2 className="font-serif font-black text-xl text-slate-900">Define your Civic Campaign Basics</h2>
+              <h2 className="font-serif font-black text-xl text-slate-900">The basics</h2>
               <p className="text-xs text-slate-500">Provide an engaging title, short summary, and pick align SDGs.</p>
             </div>
 

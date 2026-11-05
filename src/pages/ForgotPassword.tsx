@@ -128,7 +128,7 @@ export function ForgotPassword({ onNavigate }: ForgotPasswordProps) {
               onClick={() => onNavigate('login')}
               className="py-2 px-4 text-xs font-mono"
             >
-              Go Back to Login Gateway
+              Back to sign in
             </PillButton>
           </motion.div>
         )}

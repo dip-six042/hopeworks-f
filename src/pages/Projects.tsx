@@ -7,23 +7,13 @@ import { Reveal } from '../components/motion/Reveal';
 import { StaggerChildren } from '../components/motion/StaggerChildren';
 import { springBouncy } from '../lib/motion';
 import { SDG_GOALS } from '../lib/sdg-data';
-import { Search, SlidersHorizontal, ArrowDownAZ, HelpCircle, X, Shield, Goal, RefreshCw } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowDownAZ, HelpCircle, X, Shield, Goal } from 'lucide-react';
 import { PillButton } from '../components/PillButton';
 
 interface ProjectsProps {
   onNavigate: (view: string, id?: string) => void;
   initialSdg?: number | null;
 }
-
-const LIVE_ACTIVITIES = [
-  "Pledge Lock Action: $350 successfully escrow-certified for Water Treatment Campaign (SDG 6).",
-  "Auditor Verification: Auditor verified physical telemetry photo for Rain Harvester Grid.",
-  "New Volunteer Assigned: Harrison Eldo reserved 12 sweat equity shifts to SDG 4 initiative.",
-  "Milestone Verified: Milestone #1 for SDG 14 Restored Coral Nurseries approved by Phil.",
-  "Pledge Lock Action: $1,250 securely locked in escrow by Alice Greenfield for study lanterns.",
-  "Regulator Audit Checklist: Legal credentials cleared for Municipal Sanitation Campaign.",
-  "Sweat Equity Logged: Volunteer logged 4.5h hours of certified offshore coral prop action."
-];
 
 export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
   const { projects, loading: storeLoading } = useProjectsStore();
@@ -50,20 +40,6 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
     }, 650);
     return () => clearTimeout(timer);
   }, [searchQuery, selectedSdg, compensationFilter, sortOption]);
-
-  const [activityIdx, setActivityIdx] = useState(0);
-  const [animateActivity, setAnimateActivity] = useState(true);
-
-  useEffect(() => {
-    const handle = setInterval(() => {
-      setAnimateActivity(false);
-      setTimeout(() => {
-        setActivityIdx(prev => (prev + 1) % LIVE_ACTIVITIES.length);
-        setAnimateActivity(true);
-      }, 300);
-    }, 4500);
-    return () => clearInterval(handle);
-  }, []);
 
   // Interactive filtered project list
   const filteredProjects = projects
@@ -106,7 +82,7 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
     <div className="page-container py-10 space-y-6">
       
       <Reveal direction="up" className="space-y-2.5 select-none border-b border-slate-200/50 pb-6">
-        <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em] leading-none">Civic Directory</label>
+        <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em] leading-none">Campaigns</label>
         <h1 className="text-3xl sm:text-4xl xl:text-5xl font-serif font-normal text-slate-900 tracking-tight">Explore SDG-Aligned Campaigns</h1>
         <p className="text-sm sm:text-base text-slate-500 max-w-xl leading-relaxed">
           Securely fund local infrastructure or apply to volunteer your skills directly. Use filters below to target Sustainable Development Goals.
@@ -114,41 +90,14 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
         <div className="flex items-center gap-4 text-[10px] text-slate-400 font-mono">
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            100% Escrow Escorted
+            Escrow-protected
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-pulse" />
-            SDG Audited Channels
+            Milestone-verified
           </span>
         </div>
       </Reveal>
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={springBouncy}
-        className="bg-[#FAF9F6]/90 backdrop-blur-md border border-slate-200/40 rounded-2xl px-5 py-3 shadow-xs flex items-center justify-between gap-4 select-none"
-      >
-        <div className="flex items-center gap-2 text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-widest shrink-0">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span>Live Civic Feed</span>
-        </div>
-        <div className="w-full h-6 overflow-hidden relative text-xs">
-          <div className={`transition-all duration-300 transform font-mono text-slate-500 text-[10px] sm:text-[11px] flex items-center gap-2 ${
-            animateActivity ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-          }`}>
-            <span>{LIVE_ACTIVITIES[activityIdx]}</span>
-          </div>
-        </div>
-        <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1.5">
-          <RefreshCw className="h-3.5 w-3.5 animate-spin text-emerald-600" />
-          <span className="hidden sm:inline">Real-time Sync</span>
-        </div>
-      </motion.div>
 
       <Reveal direction="down" className="bg-white border border-slate-100 rounded-2xl p-5 shadow-xs space-y-4 select-none">
         

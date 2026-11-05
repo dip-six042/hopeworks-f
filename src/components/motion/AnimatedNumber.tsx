@@ -22,14 +22,14 @@ export function AnimatedNumber({
   const reducedMotion = useReducedMotion();
   const spring = useSpring(0, { stiffness: 80, damping: 20 });
   const display = useTransform(spring, (current) => {
-    const formatted = current.toFixed(decimals);
+    const formatted = Number(current).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     return `${prefix}${formatted}${suffix}`;
   });
-  const [staticValue, setStaticValue] = useState(`${prefix}${value.toFixed(decimals)}${suffix}`);
+  const [staticValue, setStaticValue] = useState(`${prefix}${Number(value).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`);
 
   useEffect(() => {
     if (reducedMotion) {
-      setStaticValue(`${prefix}${value.toFixed(decimals)}${suffix}`);
+      setStaticValue(`${prefix}${Number(value).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`);
       return;
     }
     spring.set(0);

@@ -20,8 +20,8 @@ export function HowItWorks({ onNavigate }: HowItWorksProps) {
     {
       mark: <DonationReceipt size={56} />,
       badge: "Step 01",
-      title: "Transparent Pledge & Escrow Entry",
-      desc: "Donors select an SDG project and pledge capital. 100% of the donation (disclosing a flat 5% platform operations fee) is locked securely inside the project's digital escrow vault, shielded from immediate transfer."
+      title: "1. You donate",
+      desc: "Pick a campaign and donate. We keep a 5% platform fee, shown before you pay. The rest is held by HopeWorks, not sent straight to the project."
     },
     {
       mark: <MilestoneRail steps={[
@@ -31,20 +31,20 @@ export function HowItWorks({ onNavigate }: HowItWorksProps) {
         { title: 'Approved', status: 'pending' }
       ]} className="max-w-[400px] mt-2" />,
       badge: "Step 02",
-      title: "Sequential Milestone Progress",
-      desc: "Projects execute work sequentially. Entrepreneurs cannot touch downstream milestone allocations until the current stage's physical criteria are met. This protects large pools from upfront flight risks."
+      title: "2. Work happens in stages",
+      desc: "Every campaign is split into milestones. The project owner works through them in order and can't start the next one until the current one is approved."
     },
     {
       mark: <EvidenceDoc size={56} />,
       badge: "Step 03",
-      title: "Physical Evidence & Submission",
-      desc: "Entrepreneurs deliver physical output (building structures, supply invoices, community attendance logs, geo-located photographs) and upload them to lock the milestone evidence array. Once locked, it cannot be tampered with."
+      title: "3. The owner uploads proof",
+      desc: "When a milestone is done, the owner uploads photos, receipts or other documents. The evidence can't be edited while it's being reviewed."
     },
     {
       mark: <VerifiedStamp size={56} />,
       badge: "Step 04",
-      title: "Independent PM Desk-Audit",
-      desc: "Vetted citizen Project Managers independently review the uploaded digital evidence against the original field charter. They verify signatures, check geo-logs, and release the escrow funds solely on validated quality."
+      title: "4. A Project Manager checks it",
+      desc: "An independent Project Manager reviews the proof against what the campaign promised. If it checks out, they approve the milestone and that part of the money is released. If not, they ask for changes."
     }
   ];
 
@@ -55,10 +55,10 @@ export function HowItWorks({ onNavigate }: HowItWorksProps) {
           SYSTEM OPERATIONS HANDBOOK
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-normal text-slate-900 tracking-tight leading-[1.15] px-1">
-          Milestone Escrow: Where civic trust meets auditability.
+          How HopeWorks works
         </h1>
         <p className="text-sm text-slate-500 leading-relaxed max-w-2xl mx-auto">
-          HopeWorks operates a trust-gated crowdfunding ecosystem built entirely on the principle that funds should follow visible verified results, preventing speculative fundraising.
+          On HopeWorks, money follows the work. Projects get paid in stages, and only after someone independent has checked each stage.
         </p>
       </Reveal>
 
@@ -101,27 +101,27 @@ export function HowItWorks({ onNavigate }: HowItWorksProps) {
             <div className="p-3 bg-[#B24724]/10 rounded-xl w-fit text-[#B24724]">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-2xl font-serif text-slate-800 tracking-tight">Our 5-Role Civic Platform Balance</h3>
+            <h3 className="text-2xl font-serif text-slate-800 tracking-tight">The five roles</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              HopeWorks splits actions across 5 user categories: Project Owner (Entrepreneur), Volunteer, Donor (pick one role at signup), and Admin / Project Manager (assigned post-signup by standard operations).
+              There are five roles: Project Owner, Donor, Volunteer, Project Manager and Admin. You pick one when you sign up. Admins are appointed by the HopeWorks team, and admins assign Project Managers to campaigns.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4 text-[10px] font-mono text-slate-500">
             <div>
               <span className="block font-bold text-slate-700">Entrepreneur</span>
-              <span>Submit milestones & evidence</span>
+              <span>Owners: run campaigns and upload proof</span>
             </div>
             <div>
               <span className="block font-bold text-slate-700">Volunteer</span>
-              <span>Offer hours & matching skills</span>
+              <span>Volunteers: offer time and skills</span>
             </div>
             <div>
               <span className="block font-bold text-slate-700">Project Manager</span>
-              <span>Assigned audits & verification</span>
+              <span>Project Managers: review proof</span>
             </div>
             <div>
               <span className="block font-bold text-slate-700">Donor</span>
-              <span>Escrow funding allocation</span>
+              <span>Donors: fund the work</span>
             </div>
           </div>
         </div>
@@ -131,9 +131,9 @@ export function HowItWorks({ onNavigate }: HowItWorksProps) {
             <div className="p-3 bg-[#B24724]/10 rounded-xl w-fit text-[#B24724]">
               <Layers className="h-6 w-6" />
             </div>
-            <h3 className="text-2xl font-serif text-slate-800 tracking-tight">SDG-Aligned Ledger Focus</h3>
+            <h3 className="text-2xl font-serif text-slate-800 tracking-tight">Linked to the UN goals</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Every single campaign created must explicitly fit within one of the 17 UN Sustainable Development Goals. Impact goals are locked by baseline code constraints, providing donors guaranteed thematic relevance.
+              Every campaign is tagged with at least one of the 17 UN Sustainable Development Goals, so you can find the causes you care about.
             </p>
           </div>
           <PillButton
@@ -144,7 +144,7 @@ export function HowItWorks({ onNavigate }: HowItWorksProps) {
             baseColor="#000000"
             hoveredTextColor="#ffffff"
           >
-            Explore Active Projects
+            Browse campaigns
             <ArrowRight className="h-4 w-4" />
           </PillButton>
         </div>

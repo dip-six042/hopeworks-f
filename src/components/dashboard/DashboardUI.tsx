@@ -234,25 +234,14 @@ export function TrackingCard({
 }
 
 function MilestoneProgressVisual({ progress }: { progress: number }) {
-  const pct = Math.min(100, Math.max(0, progress));
+  const pct = Math.min(100, Math.max(0, Math.round(progress)));
 
   return (
-    <div className="relative w-full max-w-[110px] h-12 select-none" aria-hidden="true">
-      <svg viewBox="0 0 140 64" className="w-full h-full" fill="none">
-        <rect x="8" y="28" width="124" height="28" rx="6" fill="#F3F1EC" stroke="#E6E4DD" strokeWidth="1.5" />
-        <rect x="8" y="28" width={124 * (pct / 100)} height="28" rx="6" fill="#B24724" opacity="0.9" />
-        <path
-          d="M0 36 L8 32 L8 52 L0 56 Z"
-          fill="#E6E4DD"
-          stroke="#D0CEBE"
-          strokeWidth="1"
-        />
-        <rect x="12" y="34" width={Math.max(0, 116 * (pct / 100))} height="16" rx="3" fill="#FFEDD5" opacity="0.5" />
-        <circle cx="118" cy="22" r="10" fill="#F3F1EC" stroke="#E6E4DD" strokeWidth="1.5" />
-        <circle cx="118" cy="22" r="4" fill="#B24724" opacity="0.6" />
-        <rect x="100" y="18" width="28" height="14" rx="4" fill="#FAF9F6" stroke="#E6E4DD" strokeWidth="1" />
-      </svg>
-      <span className="absolute bottom-0 right-0 text-[10px] font-bold text-[#B24724]">{pct}%</span>
+    <div className="w-full max-w-[120px] select-none space-y-1" role="img" aria-label={`${pct}% complete`}>
+      <div className="text-right text-[10px] font-bold text-[#B24724] tabular-nums">{pct}%</div>
+      <div className="h-2 w-full rounded-full bg-[#F3F1EC] border border-[#E6E4DD] overflow-hidden">
+        <div className="h-full rounded-full bg-[#B24724] transition-[width] duration-500" style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }

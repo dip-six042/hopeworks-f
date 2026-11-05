@@ -52,17 +52,17 @@ const PLATFORM_ROLES = [
   {
     abbr: 'PO',
     title: 'Project Owner',
-    desc: 'Runs accountable, milestone-based campaigns and recruits local volunteers recursively.',
-    responsibilities: ['Milestone Definition', 'Fund & Claim Delivery', 'Volunteer Liaison'],
+    desc: 'Starts a campaign, sets the milestones and brings in volunteers.',
+    responsibilities: ['Sets milestones', 'Uploads proof', 'Manages volunteers'],
     colorBg: 'bg-[#0B4F35]',
     colorLight: 'bg-[#0B4F35]/15 text-emerald-400 border-[#0B4F35]/30',
     gradient: 'hover:bg-[#0B4F35]/10 hover:border-[#0B4F35]/40',
   },
   {
     abbr: 'DO',
-    title: 'Donor / Sponsor',
-    desc: 'Funds local work they can verify, with a completely transparent ledger.',
-    responsibilities: ['Milestone Pledging', 'Proof Inspection', 'Escrow Verification'],
+    title: 'Donor',
+    desc: 'Gives money and can see what it was spent on.',
+    responsibilities: ['Donates', 'Follows progress', 'Gets receipts'],
     colorBg: 'bg-[#A9441B]',
     colorLight: 'bg-[#A9441B]/15 text-orange-400 border-[#A9441B]/30',
     gradient: 'hover:bg-[#A9441B]/10 hover:border-[#A9441B]/40',
@@ -70,17 +70,17 @@ const PLATFORM_ROLES = [
   {
     abbr: 'VO',
     title: 'Volunteer',
-    desc: 'Contributes skills and time, signs in/out, and earns verified credentials.',
-    responsibilities: ['Sweat Equity Hours', 'Local Skill Sharing', 'Social Impact Mining'],
+    desc: 'Gives time and skills to projects nearby.',
+    responsibilities: ['Applies to help', 'Picks dates', 'Gains experience'],
     colorBg: 'bg-[#133863]',
     colorLight: 'bg-[#133863]/15 text-sky-400 border-[#133863]/30',
     gradient: 'hover:bg-[#133863]/10 hover:border-[#133863]/40',
   },
   {
     abbr: 'PM',
-    title: 'Project Manager (Auditor)',
-    desc: 'An independent neutral professional who travels on-site to verify physically requested milestones.',
-    responsibilities: ['On-site Vetting', 'Proof Endorsement', 'Neutral Oversight'],
+    title: 'Project Manager',
+    desc: 'An independent reviewer who checks the proof for each milestone, and visits the site when needed.',
+    responsibilities: ['Reviews evidence', 'Approves milestones', 'Stays independent'],
     colorBg: 'bg-[#704A0E]',
     colorLight: 'bg-[#704A0E]/15 text-amber-400 border-[#704A0E]/30',
     gradient: 'hover:bg-[#704A0E]/10 hover:border-[#704A0E]/40',
@@ -88,8 +88,8 @@ const PLATFORM_ROLES = [
   {
     abbr: 'AD',
     title: 'Administrator',
-    desc: 'Provides central moderation, identity vetting, assigns verified PMs, and governs platform integrity.',
-    responsibilities: ['Legal Moderation', 'PM Matching', 'Dispute Resolution'],
+    desc: 'Approves campaigns, checks IDs, assigns Project Managers and handles disputes.',
+    responsibilities: ['Approves campaigns', 'Checks IDs', 'Handles disputes'],
     colorBg: 'bg-[#7F1D1D]',
     colorLight: 'bg-[#7F1D1D]/15 text-red-400 border-[#7F1D1D]/30',
     gradient: 'hover:bg-[#7F1D1D]/10 hover:border-[#7F1D1D]/40',
@@ -323,7 +323,7 @@ export function Index({ onNavigate }: IndexProps) {
             className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-emerald-50 text-emerald-800 rounded-full text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.15em] sm:tracking-[0.25em] border border-emerald-200/40 text-center max-w-full"
           >
             <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Escrow-Protected Civic Crowdfunding</span>
+            <span>Crowdfunding, paid out in stages</span>
           </motion.div>
 
           <motion.h1
@@ -332,10 +332,10 @@ export function Index({ onNavigate }: IndexProps) {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="hero-display font-serif font-normal text-[#0f0e0e] tracking-tight -mt-1 sm:-mt-2 px-1"
           >
-            <span className="block">Fund genuine impact.</span>
+            <span className="block">Fund real projects.</span>
             <span className="hero-rotate-line text-[#B24724] my-2 sm:my-3">
               <RotatingText
-                texts={['Audit the evidence.', 'Trace every dollar.', 'Certify the work.', 'Build civic trust.']}
+                texts={['See the proof.', 'Track every payment.', 'Pay as work gets done.', 'Back your community.']}
                 splitBy="words"
                 mainClassName="text-[#B24724] italic font-normal justify-center"
                 staggerFrom="first"
@@ -348,7 +348,7 @@ export function Index({ onNavigate }: IndexProps) {
                 rotationInterval={3800}
               />
             </span>
-            <span className="block">Uncap local solidarity.</span>
+            <span className="block">Help where you live.</span>
           </motion.h1>
 
           <motion.p
@@ -357,7 +357,7 @@ export function Index({ onNavigate }: IndexProps) {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="max-w-3xl mx-auto text-slate-500 font-sans text-base sm:text-lg leading-relaxed tracking-wide"
           >
-            HopeWorks secures complete trust across boundaries. Pledged capital rests locked in an auditable escrow ledger. Independent Project Managers verify physical proofs on the ground before any milestone funds disburse.
+            Donate to community projects and see exactly what happens to your money. We hold every donation and release it to the project in stages, only after an independent Project Manager checks that each stage is done.
           </motion.p>
 
           <motion.div
@@ -375,7 +375,7 @@ export function Index({ onNavigate }: IndexProps) {
               hoveredTextColor="#ffffff"
               Icon={ArrowRight}
             >
-              Explore Goals
+              Browse campaigns
             </PillButton>
             <PillButton
               onClick={() => onNavigate('create_campaign')}
@@ -418,7 +418,7 @@ export function Index({ onNavigate }: IndexProps) {
           <div className="absolute inset-0 z-0 select-none pointer-events-none opacity-40">
             <ResponsiveImage
               src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=90&w=2560"
-              alt="Luxury abstract dark backdrop"
+              alt=""
               sizes="100vw"
               aspectRatio="16/9"
               referrerPolicy="no-referrer"
@@ -431,16 +431,16 @@ export function Index({ onNavigate }: IndexProps) {
             <Reveal direction="left" className="lg:col-span-7 space-y-6 md:space-y-8 text-left">
               <div>
                 <span className="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3.5 py-1.5 rounded-[4px] font-sans font-black text-[11px] uppercase tracking-wider select-none">
-                  Verified Trust & Escrow Guarantee
+                  How your money is protected
                 </span>
               </div>
 
               <h2 className="text-fluid-heading sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-serif font-black text-white tracking-tight leading-[1.1] max-w-xl">
-                Every pledge is tied to verified progress.
+                Your money follows the work.
               </h2>
 
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans font-light max-w-xl">
-                Our transparent, <span className="text-amber-300 font-semibold">milestone-locked escrow protocol</span> guards every donation. Funds are only disbursed when real-world evidence is audited and verified, ensuring your generosity transforms communities with <span className="text-amber-300 font-semibold">absolute integrity</span>.
+                We hold every donation and pay it out <span className="text-amber-300 font-semibold">one milestone at a time</span>. Before any money goes out, someone independent looks at the photos and documents and confirms the work was actually done.
               </p>
             </Reveal>
 
@@ -448,7 +448,7 @@ export function Index({ onNavigate }: IndexProps) {
               <div className="relative w-full max-w-md aspect-square lg:aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 group">
                 <ResponsiveImage
                   src={communityAboutImage}
-                  alt="Proud volunteers delivering drinking water to citizens"
+                  alt="Volunteers handing out drinking water"
                   sizes="(min-width: 1024px) 28rem, 100vw"
                   aspectRatio="4/5"
                   referrerPolicy="no-referrer"
@@ -469,8 +469,8 @@ export function Index({ onNavigate }: IndexProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
           <div className="lg:col-span-2 space-y-6">
             <Reveal direction="up" className="space-y-1.5">
-              <span className="text-[10px] uppercase font-mono tracking-widest font-bold text-[#B24724]">Core Ledger Diagnostics</span>
-              <h3 className="text-2xl sm:text-3xl xl:text-4xl font-serif font-normal text-slate-950 tracking-tight">Active Platform Aggregate Ledger</h3>
+              <span className="text-[10px] uppercase font-mono tracking-widest font-bold text-[#B24724]">Platform totals</span>
+              <h3 className="text-2xl sm:text-3xl xl:text-4xl font-serif font-normal text-slate-950 tracking-tight">Where the money is</h3>
             </Reveal>
             <BigNumbers />
           </div>
@@ -499,15 +499,15 @@ export function Index({ onNavigate }: IndexProps) {
             <Reveal direction="left" className="lg:col-span-5 space-y-4 sm:space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-sans font-bold text-amber-500 uppercase tracking-[0.2em] sm:tracking-[0.25em]">
-                  Civic Ecosystem
+                  Who does what
                 </label>
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-normal text-white tracking-tight leading-[1.15]">
-                  Active Platform Cooperation Roles
+                  Five roles on HopeWorks
                 </h2>
               </div>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans max-w-md lg:max-w-none">
-                HopeWorks operates on clean, accountable synergy between five authorized community roles. Together, they mobilize secure funding, volunteer support, and robust physical milestone auditing.
+                Project owners run the work, donors fund it, volunteers help on the ground, Project Managers check the proof, and admins keep things fair.
               </p>
 
               <p className="text-[10px] font-mono text-slate-500 lg:hidden">
@@ -524,7 +524,7 @@ export function Index({ onNavigate }: IndexProps) {
                   className="py-3 px-6 text-xs font-sans shadow-xs border border-white/30"
                   Icon={ArrowRight}
                 >
-                  Learn How Escrow Works
+                  How it works
                 </PillButton>
               </div>
             </Reveal>
@@ -582,7 +582,7 @@ export function Index({ onNavigate }: IndexProps) {
                 className="w-full py-3 text-xs font-sans shadow-xs justify-center border border-white/30"
                 Icon={ArrowRight}
               >
-                Learn How Escrow Works
+                How it works
               </PillButton>
             </div>
           </div>
@@ -599,10 +599,10 @@ export function Index({ onNavigate }: IndexProps) {
       {/* 2.5 THE ESCROW & PROOF PIPELINE IN PICTURES */}
       <section className="page-container space-y-8 sm:space-y-10 select-none my-14 sm:my-20 lg:my-24">
         <Reveal direction="bouncy" className="text-center space-y-1.5 max-w-2xl mx-auto">
-          <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em]">Audited Workflow</label>
-          <h2 className="text-2xl sm:text-3xl font-serif font-normal text-slate-900 tracking-tight">The Three Pillars of Securing Local Hope</h2>
+          <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em]">How it works</label>
+          <h2 className="text-2xl sm:text-3xl font-serif font-normal text-slate-900 tracking-tight">Three simple steps</h2>
           <p className="text-xs text-slate-500 leading-relaxed">
-            Standard crowdfunding ends at payment. HopeWorks secures the complete cycle of trust through escrow milestones, active volunteerism, and certified audits.
+            Most crowdfunding stops once you've paid. HopeWorks keeps track until the work is finished.
           </p>
         </Reveal>
 
@@ -615,7 +615,7 @@ export function Index({ onNavigate }: IndexProps) {
             <div className="absolute inset-0 z-0 overflow-hidden">
               <ResponsiveImage
                 src="https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&q=90&w=1920"
-                alt="Locked escrow capital mobilization"
+                alt="Coins in a jar with a plant growing"
                 sizes="(min-width: 1024px) 33vw, 100vw"
                 aspectRatio="4/3"
                 referrerPolicy="no-referrer"
@@ -632,9 +632,9 @@ export function Index({ onNavigate }: IndexProps) {
               transition={springBouncy}
             >
               <span className="font-mono text-[9px] uppercase tracking-widest text-emerald-400 bg-emerald-900/50 border border-emerald-900/30 px-2 py-0.5 rounded">Stage 01</span>
-              <h4 className="font-serif font-semibold text-lg leading-tight text-white">Pledge & Lock Capital</h4>
+              <h4 className="font-serif font-semibold text-lg leading-tight text-white">You donate</h4>
               <p className="text-[11px] text-slate-300 leading-relaxed font-sans font-light">
-                Pledges are held in escrow, not paid out upfront. Your money remains untouched until concrete milestones are physically built.
+                We hold your money. The project doesn't get it all upfront.
               </p>
             </motion.div>
           </motion.div>
@@ -647,7 +647,7 @@ export function Index({ onNavigate }: IndexProps) {
             <div className="absolute inset-0 z-0 overflow-hidden">
               <ResponsiveImage
                 src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=90&w=1920"
-                alt="Active community field work"
+                alt="Hands holding a seedling"
                 sizes="(min-width: 1024px) 33vw, 100vw"
                 aspectRatio="4/3"
                 referrerPolicy="no-referrer"
@@ -664,9 +664,9 @@ export function Index({ onNavigate }: IndexProps) {
               transition={springBouncy}
             >
               <span className="font-mono text-[9px] uppercase tracking-widest text-[#38bdf8] bg-sky-950/50 border border-sky-950/30 px-2 py-0.5 rounded">Stage 02</span>
-              <h4 className="font-serif font-semibold text-lg leading-tight text-white">Community & Field Labor</h4>
+              <h4 className="font-serif font-semibold text-lg leading-tight text-white">The work gets done</h4>
               <p className="text-[11px] text-slate-300 leading-relaxed font-sans font-light">
-                Active volunteers match with project coordinators to construct clean rain grids, assemble solar study lanterns, and multiply damaged coral nurseries.
+                The project team, often with local volunteers, does the work and uploads photos and documents as each milestone is finished.
               </p>
             </motion.div>
           </motion.div>
@@ -679,7 +679,7 @@ export function Index({ onNavigate }: IndexProps) {
             <div className="absolute inset-0 z-0 overflow-hidden">
               <ResponsiveImage
                 src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=90&w=1920"
-                alt="Independent engineering field audit"
+                alt="Engineer checking work on site"
                 sizes="(min-width: 1024px) 33vw, 100vw"
                 aspectRatio="4/3"
                 referrerPolicy="no-referrer"
@@ -696,9 +696,9 @@ export function Index({ onNavigate }: IndexProps) {
               transition={springBouncy}
             >
               <span className="font-mono text-[9px] uppercase tracking-widest text-indigo-400 bg-indigo-950/50 border border-indigo-950/30 px-2 py-0.5 rounded">Stage 03</span>
-              <h4 className="font-serif font-semibold text-lg leading-tight text-white">PM Certified Evidence Auditing</h4>
+              <h4 className="font-serif font-semibold text-lg leading-tight text-white">Someone checks it</h4>
               <p className="text-[11px] text-slate-300 leading-relaxed font-sans font-light">
-                Registered inspection managers assess physical proofs and photo telemetry on-site. Verified milestones automatically release funds to owners.
+                An independent Project Manager reviews the proof. Once a milestone is approved, that part of the money is released.
               </p>
             </motion.div>
           </motion.div>
@@ -724,9 +724,9 @@ export function Index({ onNavigate }: IndexProps) {
           <div className="relative z-10 space-y-10">
             <Reveal direction="up" className="flex flex-col sm:flex-row justify-between items-end gap-4 border-b border-white/10 pb-5">
               <div className="text-center sm:text-left space-y-1.5">
-                <label className="text-xs sm:text-sm font-sans font-bold text-emerald-400 uppercase tracking-[0.2em]">UN Alignment Matrix</label>
-                <h2 className="text-2xl sm:text-3xl xl:text-4xl font-serif font-normal text-white tracking-tight">SDG Campaigns Mapping Matrix</h2>
-                <p className="text-sm sm:text-base text-slate-300 max-w-lg leading-relaxed">Each HopeWorks campaign aligns with the 17 United Nations goals to focus civic energy.</p>
+                <label className="text-xs sm:text-sm font-sans font-bold text-emerald-400 uppercase tracking-[0.2em]">Browse by goal</label>
+                <h2 className="text-2xl sm:text-3xl xl:text-4xl font-serif font-normal text-white tracking-tight">The 17 UN goals</h2>
+                <p className="text-sm sm:text-base text-slate-300 max-w-lg leading-relaxed">Every campaign is linked to one or more of the UN Sustainable Development Goals.</p>
               </div>
             </Reveal>
 
@@ -775,7 +775,7 @@ export function Index({ onNavigate }: IndexProps) {
                   hoveredTextColor="#ffffff"
                   className="pointer-events-auto text-sm font-semibold px-4 py-2 border-emerald-700/60"
                 >
-                  Matrix Directory ↗
+                  All goals ↗
                 </PillButton>
               </div>
 
@@ -792,8 +792,8 @@ export function Index({ onNavigate }: IndexProps) {
       <section className="page-container space-y-10 my-14 sm:my-20 lg:my-24">
         <Reveal direction="up" className="flex flex-col sm:flex-row justify-between items-baseline gap-2 pb-5 border-b border-slate-200/50">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em]">Civic Campaigns</label>
-            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-serif font-normal text-slate-900 tracking-tight">Featured Escrow-Driven Initiatives</h2>
+            <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em]">Campaigns</label>
+            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-serif font-normal text-slate-900 tracking-tight">Featured campaigns</h2>
           </div>
           <motion.button
             onClick={() => onNavigate('explore')}
@@ -801,7 +801,7 @@ export function Index({ onNavigate }: IndexProps) {
             transition={springBouncy}
             className="text-[11px] uppercase tracking-[0.15em] text-slate-600 hover:text-slate-900 font-sans font-bold flex items-center gap-1.5 select-none shrink-0"
           >
-            <span>See All Goal Projects</span>
+            <span>See all campaigns</span>
             <ArrowRight className="h-4 w-4" />
           </motion.button>
         </Reveal>
@@ -827,10 +827,10 @@ export function Index({ onNavigate }: IndexProps) {
         <Reveal direction="up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-slate-200/50 pb-6">
           <div className="space-y-3 max-w-2xl">
             <h2 className="text-3xl sm:text-4xl font-serif font-normal text-slate-950 tracking-tight">
-              Active Escrow & Audit Ledger
+              What's been happening
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-              Every dollar pledged remains locked under rigorous verification. Swipe or slide to track chronologically our live stream of community contributions, peer-to-peer audits, and milestones unlocked on the ground.
+              Recent donations, volunteers joining and milestones being approved.
             </p>
           </div>
 
@@ -900,8 +900,8 @@ export function Index({ onNavigate }: IndexProps) {
                 };
                 ActionIcon = Heart;
               } else if (item.type === 'application') {
-                elegantTitle = "Field Coordinator Matched";
-                statusPill = "Civic Labor";
+                elegantTitle = "Volunteer joined";
+                statusPill = "Volunteer";
                 colorTheme = {
                   border: "border-sky-400",
                   bg: "bg-sky-50/50",

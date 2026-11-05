@@ -37,21 +37,21 @@ export const CIVIC_ROLES = {
     label: 'Project Owner',
     colorClass: 'bg-[#0B4F35] text-white border-[#0B4F35]',
     bgLight: 'bg-[#0B4F35]/12 text-[#0B4F35] border-[#0B4F35]/25 font-semibold',
-    desc: 'Runs accountable, milestone-based campaigns and recruits volunteers.'
+    desc: 'Starts campaigns and gets funded one milestone at a time.'
   },
   donor: {
     abbr: 'DO',
-    label: 'Donor / Sponsor',
+    label: 'Donor',
     colorClass: 'bg-[#A9441B] text-white border-[#A9441B]',
     bgLight: 'bg-[#A9441B]/12 text-[#A9441B] border-[#A9441B]/25 font-semibold',
-    desc: 'Funds work they can verify, with a full ledger from contribution to delivery.'
+    desc: 'Gives to projects and can see where the money goes.'
   },
   volunteer: {
     abbr: 'VO',
     label: 'Volunteer',
     colorClass: 'bg-[#133863] text-white border-[#133863]',
     bgLight: 'bg-[#133863]/12 text-[#133863] border-[#133863]/25 font-semibold',
-    desc: 'Contributes time + skills, sets availability, earns verified recognition.'
+    desc: 'Gives time and skills to projects.'
   },
   project_manager: {
     abbr: 'PM',
@@ -109,6 +109,12 @@ export function AdminDashboard({
   // 2. Campaigns pending pre-launch audit validation
   const pendingCampaigns = projects.filter(p => p.status === 'pending');
   const activeCampaigns = projects.filter(p => p.status === 'active');
+  const totalRaised = projects.reduce((sum, p) => sum + Number(p.fundingRaised || 0), 0);
+  const approvedMilestoneValue = projects.reduce(
+    (sum, p) => sum + (p.milestones ?? []).filter((m) => m.status === 'approved').reduce((s2, m) => s2 + Number(m.cost || 0), 0),
+    0
+  );
+  const escrowHeld = Math.max(0, totalRaised - approvedMilestoneValue);
   const totalManagedCampaigns = projects.filter(
     (p) => p.status === 'pending' || p.status === 'active' || p.status === 'completed'
   ).length;
@@ -208,33 +214,6 @@ export function AdminDashboard({
     }
   };
 
-  // Score Bars Component to match Conceptzilla UI
-  const ScoreBars = ({ score }: { score: number }) => {
-    const bars = Array.from({ length: 10 });
-    return (
-      <div className="flex items-center gap-2">
-        <div className="flex items-end gap-0.5 h-3">
-          {bars.map((_, i) => {
-            const isActive = i < score;
-            let barColor = 'bg-slate-200';
-            if (isActive) {
-              if (score >= 8) barColor = 'bg-[#10B981]';
-              else if (score >= 5) barColor = 'bg-[#B24724]';
-              else barColor = 'bg-rose-500';
-            }
-            return (
-              <div 
-                key={i} 
-                className={`w-[2.5px] rounded-xs transition-all ${barColor}`}
-                style={{ height: `${(i + 2) * 10}%` }}
-              />
-            );
-          })}
-        </div>
-        <span className="text-[10px] font-mono text-slate-500 font-bold">{score}/10</span>
-      </div>
-    );
-  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={springDashboard} className="space-y-6 text-xs select-none">
@@ -244,20 +223,20 @@ export function AdminDashboard({
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Gov-ID Reviews</span>
+              <span>ID checks</span>
               {verificationQueue.length > 0 && (
                 <span className="text-[10px] text-amber-600 bg-amber-50 px-1 py-0.2 rounded-md font-bold font-mono animate-pulse">Required</span>
               )}
             </div>
             <p className="font-serif font-black text-2xl text-slate-900">{verificationQueue.length} Pending</p>
-            <p className="text-[10px] text-slate-400 font-mono">Platform Identity Queue</p>
+            <p className="text-[10px] text-slate-400 font-mono">ID checks waiting</p>
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Campaign Approvals</span>
+              <span>Campaigns</span>
               {pendingCampaigns.length > 0 && (
                 <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1 py-0.2 rounded-md font-bold font-mono">Action needed</span>
               )}
@@ -272,22 +251,20 @@ export function AdminDashboard({
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Platform Escrow Pot</span>
-              <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded-md font-bold font-mono">100% Safe</span>
+              <span>Held in escrow</span>
             </div>
-            <p className="font-serif font-black text-2xl text-emerald-800">$142,500</p>
-            <p className="text-[10px] text-slate-400 font-mono">Aggregated escrow balances</p>
+            <p className="font-serif font-black text-2xl text-emerald-800">${escrowHeld.toLocaleString()}</p>
+            <p className="text-[10px] text-slate-400 font-mono">Raised minus approved milestones</p>
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Compliance Ratio</span>
-              <span className="text-[10px] text-teal-600 bg-teal-50 px-1 py-0.2 rounded-md font-bold font-mono">Optimal</span>
+              <span>Total raised</span>
             </div>
-            <p className="font-serif font-black text-2xl text-teal-800">99.7%</p>
-            <p className="text-[10px] text-slate-400 font-mono">Verified public chain hashes</p>
+            <p className="font-serif font-black text-2xl text-teal-800">${totalRaised.toLocaleString()}</p>
+            <p className="text-[10px] text-slate-400 font-mono">Across all campaigns</p>
           </div>
         </div>
       </div>
@@ -336,11 +313,10 @@ export function AdminDashboard({
                       className="rounded text-[#B24724] focus:ring-[#B24724]"
                     />
                   </th>
-                  <th className="py-3 px-4">REGISTERED USER</th>
-                  <th className="py-3 px-4">EMAIL GATEWAY</th>
-                  <th className="py-3 px-4">ATTACHED LEGAL ID</th>
-                  <th className="py-3 px-4">VERIFICATION NODAL STATUS</th>
-                  <th className="py-3 px-4">COOPERATIVE RATING</th>
+                  <th className="py-3 px-4">USER</th>
+                  <th className="py-3 px-4">EMAIL</th>
+                  <th className="py-3 px-4">ID DOCUMENT</th>
+                  <th className="py-3 px-4">STATUS</th>
                   <th className="py-3 px-4 text-right">ACTION</th>
                 </tr>
               </thead>
@@ -388,10 +364,13 @@ export function AdminDashboard({
                             <button
                               type="button"
                               onClick={async () => {
-                                const win = window.open('', '_blank', 'noreferrer');
+                                // Open the tab synchronously (so popup blockers allow it), then point it at the signed URL.
+                                const win = window.open('about:blank', '_blank');
+                                if (win) win.opener = null;
                                 try {
                                   const url = await getGovIdUrl(queueUser.id);
-                                  if (win) win.location.href = url; else window.open(url, '_blank', 'noreferrer');
+                                  if (win) win.location.replace(url);
+                                  else window.location.assign(url);
                                 } catch (err) {
                                   win?.close();
                                   toast.error((err as Error).message || 'Could not open ID document.');
@@ -409,12 +388,8 @@ export function AdminDashboard({
 
                       <td className="py-3 px-4">
                         <span className="inline-flex items-center gap-1 text-[9px] font-mono tracking-wider font-extrabold bg-amber-55/15 text-amber-700 px-2 py-0.5 rounded-full border border-amber-150 uppercase animate-pulse">
-                          Awaiting Decrypt
+                          Pending review
                         </span>
-                      </td>
-
-                      <td className="py-3 px-4">
-                        <ScoreBars score={7} />
                       </td>
 
                       <td className="py-3 px-4 text-right">
@@ -471,12 +446,12 @@ export function AdminDashboard({
                       className="rounded text-[#B24724] focus:ring-[#B24724]"
                     />
                   </th>
-                  <th className="py-3 px-4">CAMPAIGN TITLE</th>
+                  <th className="py-3 px-4">CAMPAIGN</th>
                   <th className="py-3 px-4">STATUS</th>
-                  <th className="py-3 px-4">CREATOR OWNER</th>
-                  <th className="py-3 px-4">TARGET GOAL BUDGET</th>
-                  <th className="py-3 px-4">APPOINTED MONITOR AUDITOR</th>
-                  <th className="py-3 px-4">LAUNCH SECURITY ACTION</th>
+                  <th className="py-3 px-4">OWNER</th>
+                  <th className="py-3 px-4">GOAL</th>
+                  <th className="py-3 px-4">PROJECT MANAGER</th>
+                  <th className="py-3 px-4">ACTION</th>
                   <th className="py-3 px-4 w-28">DELETE</th>
                 </tr>
               </thead>
@@ -573,7 +548,7 @@ export function AdminDashboard({
                           </PillButton>
                         ) : (
                           <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">
-                            {camp.status === 'active' ? 'Live on platform' : camp.status}
+                            {camp.status === 'active' ? 'Live' : camp.status === 'pending' ? 'Waiting for approval' : camp.status}
                           </span>
                         )}
                       </td>
@@ -584,6 +559,8 @@ export function AdminDashboard({
                           variant="danger"
                           caps={false}
                           onClick={() => setCampaignToDelete(camp)}
+                          disabled={camp.fundingRaised > 0}
+                          title={camp.fundingRaised > 0 ? 'Campaigns with donations can\'t be deleted' : undefined}
                           className="w-full py-1.5 text-[9px]"
                         >
                           <Trash2 className="h-3 w-3" />
@@ -775,8 +752,8 @@ export function AdminDashboard({
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="space-y-0.5">
-            <h5 className="font-bold text-slate-800 text-xs font-serif leading-none">Platform Custodia Compliance protocol</h5>
-            <p className="text-[11px] text-slate-500 font-sans leading-tight">Identity audits protect community capital under UN SDG legal frameworks. Every campaign launch must select a third-party monitor prior to escrow activations.</p>
+            <h5 className="font-bold text-slate-800 text-xs font-serif leading-none">Before approving a campaign</h5>
+            <p className="text-[11px] text-slate-500 font-sans leading-tight">Check the owner's ID and assign a Project Manager, so every milestone has someone independent reviewing it.</p>
           </div>
         </div>
       </div>
