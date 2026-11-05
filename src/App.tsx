@@ -19,7 +19,8 @@ import { ProjectAvailability } from './pages/ProjectAvailability';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { ArrowUp } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, MotionConfig } from 'motion/react';
+import { SmoothScroll, ScrollProgress } from './components/motion/SmoothScroll';
 import { pageTransition, resolveVariants, springBouncy } from './lib/motion';
 import { useReducedMotion } from './hooks/useReducedMotion';
 import { supabase } from './lib/supabase';
@@ -339,6 +340,10 @@ function AppContent() {
     }`}>
       {authLoading && !user && <PulseBeatLoader message="Verifying your session" />}
 
+      {/* Smooth wheel scrolling + progress bar on long public pages only (dashboards scroll inside panels). */}
+      <SmoothScroll enabled={!isFullHeightView} />
+      <ScrollProgress show={!isFullHeightView} />
+
       <IdleLogoutGuard
         onSignedOut={() => {
           setView('login');
@@ -467,6 +472,8 @@ function AppContent() {
 export default function App() {
   return (
     <div className="h-full min-h-0">
+      {/* Respect the visitor's "reduce motion" system setting for every animation. */}
+      <MotionConfig reducedMotion="user">
       <AuthProvider>
         <NotificationsProvider>
           <LoadingOverlayProvider>
@@ -476,6 +483,7 @@ export default function App() {
           </LoadingOverlayProvider>
         </NotificationsProvider>
       </AuthProvider>
+      </MotionConfig>
     </div>
   );
 }
