@@ -133,10 +133,11 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
 
         </div>
 
-        {/* Row 2: SDG Badges Horizontal Row Filter */}
+        {/* Row 2: SDG Badges Horizontal Row Filter (hidden until some campaign has a goal) */}
+        {projects.some((p) => (p.status === 'active' || p.status === 'completed') && p.sdgs.length > 0) && (
         <div className="space-y-1 pb-1">
           <div className="flex justify-between items-baseline text-[10px] uppercase font-mono text-slate-400 font-semibold">
-            <span>Filter by UN Sustainable Goal:</span>
+            <span>Filter by UN goal</span>
             {selectedSdg !== null && (
               <PillButton
                 variant="outline"
@@ -178,6 +179,7 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
             })}
           </div>
         </div>
+        )}
 
       </Reveal>
 
@@ -222,7 +224,7 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
                   }}
                   className="mt-3 py-1.5 px-4 text-xs font-mono shadow-2xs"
                 >
-                  Reset Directories
+                  Clear filters
                 </PillButton>
               </div>
             )}

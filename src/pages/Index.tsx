@@ -314,7 +314,7 @@ export function Index({ onNavigate }: IndexProps) {
 
       <div className="overflow-x-clip pt-16 sm:pt-[4.5rem]">
       {/* 1. HERO SECTION & VISUAL ENTRY */}
-      <section className="relative page-container pt-8 sm:pt-10 pb-6 sm:pb-8 select-none">
+      <section className="relative page-container pt-12 sm:pt-16 pb-6 sm:pb-8 select-none">
         <div className="max-w-6xl xl:max-w-7xl mx-auto text-center space-y-5 sm:space-y-6">
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
@@ -336,6 +336,7 @@ export function Index({ onNavigate }: IndexProps) {
                 splitLevelClassName=""
                 transition={{ type: "spring", damping: 30, stiffness: 280 }}
                 rotationInterval={3800}
+                animatePresenceMode="popLayout"
               />
             </span>
             <span className="block">Help where you live.</span>
