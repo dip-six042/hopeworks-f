@@ -12,8 +12,8 @@ interface FooterProps {
 }
 
 const FOOTER_LINKS = [
-  { label: 'Volunteer Availability', view: 'availability' },
-  { label: 'Bylaw Rules', view: 'home' },
+  { label: 'Campaigns', view: 'explore' },
+  { label: 'How it works', view: 'how_it_works' },
   { label: 'Terms of Service', view: 'terms' },
   { label: 'Privacy Policy', view: 'privacy' },
 ] as const;
