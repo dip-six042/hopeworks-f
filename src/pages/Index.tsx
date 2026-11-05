@@ -316,16 +316,6 @@ export function Index({ onNavigate }: IndexProps) {
       {/* 1. HERO SECTION & VISUAL ENTRY */}
       <section className="relative page-container pt-8 sm:pt-10 pb-6 sm:pb-8 select-none">
         <div className="max-w-6xl xl:max-w-7xl mx-auto text-center space-y-5 sm:space-y-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-emerald-50 text-emerald-800 rounded-full text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.15em] sm:tracking-[0.25em] border border-emerald-200/40 text-center max-w-full"
-          >
-            <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Crowdfunding, paid out in stages</span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

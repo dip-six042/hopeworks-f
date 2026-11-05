@@ -82,21 +82,10 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
     <div className="page-container py-10 space-y-6">
       
       <Reveal direction="up" className="space-y-2.5 select-none border-b border-slate-200/50 pb-6">
-        <label className="text-[10px] font-sans font-bold text-emerald-600 uppercase tracking-[0.25em] leading-none">Campaigns</label>
-        <h1 className="text-3xl sm:text-4xl xl:text-5xl font-serif font-normal text-slate-900 tracking-tight">Explore SDG-Aligned Campaigns</h1>
+        <h1 className="text-3xl sm:text-4xl xl:text-5xl font-serif font-normal text-slate-900 tracking-tight">Campaigns</h1>
         <p className="text-sm sm:text-base text-slate-500 max-w-xl leading-relaxed">
-          Securely fund local infrastructure or apply to volunteer your skills directly. Use filters below to target Sustainable Development Goals.
+          Donate to a project or offer to volunteer. Filter by UN goal to find causes you care about.
         </p>
-        <div className="flex items-center gap-4 text-[10px] text-slate-400 font-mono">
-          <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Escrow-protected
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-pulse" />
-            Milestone-verified
-          </span>
-        </div>
       </Reveal>
 
       <Reveal direction="down" className="bg-white border border-slate-100 rounded-2xl p-5 shadow-xs space-y-4 select-none">
@@ -123,9 +112,9 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
               onChange={(e) => setCompensationFilter(e.target.value as any)}
               className="w-full px-3 py-2.5 outline-none rounded-xl border border-slate-200 focus:border-slate-400 transition-colors text-xs font-mono bg-white"
             >
-              <option value="all">Volunteering Opportunities (All)</option>
-              <option value="unpaid">Unpaid / Gift Volunteering</option>
-              <option value="paid">Paid Work Shifts</option>
+              <option value="all">All volunteer roles</option>
+              <option value="unpaid">Unpaid</option>
+              <option value="paid">Paid</option>
             </select>
           </div>
 
@@ -136,9 +125,9 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
               onChange={(e) => setSortOption(e.target.value as any)}
               className="w-full px-3 py-2.5 outline-none rounded-xl border border-slate-200 focus:border-slate-400 transition-colors text-xs font-mono bg-white"
             >
-              <option value="newest">Sort By: Newest Initiatives</option>
-              <option value="funding_raised">Sort By: Highest Pledged ($)</option>
-              <option value="funding_target">Sort By: Campaign Target ($)</option>
+              <option value="newest">Newest first</option>
+              <option value="funding_raised">Most raised</option>
+              <option value="funding_target">Biggest goal</option>
             </select>
           </div>
 
@@ -219,9 +208,9 @@ export function Projects({ onNavigate, initialSdg = null }: ProjectsProps) {
                 <div className="h-10 w-10 bg-slate-50 border border-slate-100 text-slate-400 rounded-xl flex items-center justify-center mx-auto text-sm">
                   <Goal className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif font-semibold text-slate-800 text-base">No Matching Goals</h3>
+                <h3 className="font-serif font-semibold text-slate-800 text-base">No campaigns yet</h3>
                 <p className="text-xs text-slate-500 font-sans leading-relaxed">
-                  No active or completed campaigns matched your search or filters. Try checking different SGD indices or clear search queries.
+                  Nothing matches right now. Try a different search or clear the filters.
                 </p>
                 <PillButton
                   variant="primary"
