@@ -94,20 +94,6 @@ export function MilestonePanel({ project, onMilestoneUpdated }: MilestonePanelPr
 
   const MAX_EVIDENCE_SIZE = 5 * 1024 * 1024;
 
-  // Handy mockup evidence presets
-  const evidencePresets = [
-    { label: "Engineering Sign-off (PDF)", url: "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&q=80&w=400" },
-    { label: "Campus Piping Survey Photo", url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=400" },
-    { label: "Community Water Council Signature", url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400" },
-    { label: "Lombok Reef Seed Matrix Image", url: "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&q=80&w=400" }
-  ];
-
-  const handleAddPresetEvidence = (url: string) => {
-    if (!evidenceUrls.includes(url)) {
-      setEvidenceUrls([...evidenceUrls, url]);
-    }
-  };
-
   const handleAddCustomEvidence = () => {
     if (customEvidenceUrl.trim() && !evidenceUrls.includes(customEvidenceUrl.trim())) {
       setEvidenceUrls([...evidenceUrls, customEvidenceUrl.trim()]);
@@ -392,23 +378,6 @@ export function MilestonePanel({ project, onMilestoneUpdated }: MilestonePanelPr
                             ))}
                           </div>
                         )}
-
-                        {/* Presets load (super handy!) */}
-                        <div className="space-y-1.5">
-                          <p className="text-[10px] text-slate-400 font-mono">Sandbox Presets: Select mock proofs to append:</p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {evidencePresets.map((p, i) => (
-                              <button
-                                type="button"
-                                key={i}
-                                onClick={() => handleAddPresetEvidence(p.url)}
-                                className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] font-mono transition-colors"
-                              >
-                                + {p.label}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
 
                         <div className="pt-2 space-y-2">
                           <input

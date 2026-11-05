@@ -61,6 +61,8 @@ export interface Donation {
   isAnonymous: boolean;
   message?: string;
   createdAt: string;
+  status?: 'pending' | 'paid' | 'failed';
+  currency?: string;
 }
 
 export interface VolunteerApplication {

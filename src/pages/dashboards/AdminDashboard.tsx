@@ -9,6 +9,7 @@ import { PillButton } from '../../components/PillButton';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { useToast } from '../../context/ToastContext';
+import { getGovIdUrl } from '../../lib/apiClient';
 import { Project } from '../../types';
 import { 
   ShieldCheck, 
@@ -382,16 +383,24 @@ export function AdminDashboard({
                         {queueUser.govIdUrl ? (
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-mono text-slate-500 bg-slate-100 border p-1 rounded-md max-w-[150px] truncate block">
-                              gov_passport_id.bin
+                              {queueUser.govIdUrl.split('/').pop()}
                             </span>
-                            <a 
-                              href={queueUser.govIdUrl}
-                              target="_blank"
-                              referrerPolicy="no-referrer"
-                              className="text-[9px] text-[#B24724] hover:underline font-bold"
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const win = window.open('', '_blank', 'noreferrer');
+                                try {
+                                  const url = await getGovIdUrl(queueUser.id);
+                                  if (win) win.location.href = url; else window.open(url, '_blank', 'noreferrer');
+                                } catch (err) {
+                                  win?.close();
+                                  toast.error((err as Error).message || 'Could not open ID document.');
+                                }
+                              }}
+                              className="text-[9px] text-[#B24724] hover:underline font-bold cursor-pointer"
                             >
                               PREVIEW ID
-                            </a>
+                            </button>
                           </div>
                         ) : (
                           <span className="text-slate-400 italic">No document attached</span>

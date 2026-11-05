@@ -79,7 +79,7 @@ export function CertificateDownload({ badge, onClose }: CertificateDownloadProps
                 </div>
 
                 <div class="pt-6 font-mono text-[9px] text-slate-400 leading-relaxed max-w-md">
-                  This is a ledger-backed, legally binding credential. Any duplication is recorded in verification servers. HopeWorks is a registered public benefits corporation supporting SDG Milestones via high-integrity Escrow routing.
+                  This certificate recognises your contribution on HopeWorks. Campaign funds are released only as milestones are independently verified.
                 </div>
 
               </div>

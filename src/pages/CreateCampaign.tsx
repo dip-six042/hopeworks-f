@@ -9,6 +9,7 @@ import { Check, ClipboardList, Target, Users, Calendar, ArrowRight, ArrowLeft, I
 import { PillButton } from '../components/PillButton';
 import { SectorCategoryInput } from '../components/SectorCategoryInput';
 import { ResponsiveImage } from '../components/ResponsiveImage';
+import { VolunteerDatesPicker } from '../components/VolunteerDatesPicker';
 
 const COVER_PRESETS = [
   { label: 'Plumbing & Pipes', url: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=1200' },
@@ -207,7 +208,7 @@ export function CreateCampaign({ onNavigate }: CreateCampaignProps) {
       };
 
       const launched = await createCampaign(payload);
-      toast.success(`Success! Campaign "${launched.title}" has been securely established on our public benefits sandbox ledger.`);
+      toast.success(`Success! Campaign "${launched.title}" has been submitted for admin review.`);
       onNavigate('project_detail', launched.id);
     } catch (e: any) {
       setError(e?.message || "Failed to launch campaign.");

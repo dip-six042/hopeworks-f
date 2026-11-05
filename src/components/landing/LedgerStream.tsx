@@ -99,7 +99,7 @@ export function LedgerStream() {
       <div className="flex items-center justify-between border-b border-slate-200/50 pb-3">
         <div className="flex items-center gap-2">
           <Eye className="h-4 w-4 text-[#B24724]" />
-          <h3 className="font-serif text-sm font-medium text-slate-800">Candid Ledger Ledger Stream</h3>
+          <h3 className="font-serif text-sm font-medium text-slate-800">Live Ledger Stream</h3>
         </div>
         <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full animate-pulse">
           ● AUDITED SECURE LIVE
@@ -109,7 +109,7 @@ export function LedgerStream() {
       <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
         {ledger.length === 0 ? (
           <div className="text-center py-8 text-xs font-mono text-slate-400">
-            Scanning for campaign ledger ledger updates...
+            Waiting for the first campaign updates…
           </div>
         ) : (
           ledger.map((item, index) => (

@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Reveal } from '../components/motion/Reveal';
 import { useAuth } from '../context/AuthContext';
+import { getGovIdUrl } from '../lib/apiClient';
 import { SDG_GOALS } from '../lib/sdg-data';
 import { User, ClipboardList, Shield, ShieldCheck, Heart, Sparkles, Image } from 'lucide-react';
 import { PillButton } from '../components/PillButton';
 
 export function EditProfile() {
   const { user, updateProfile, uploadGovId } = useAuth();
+  const [govIdPreview, setGovIdPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user?.govIdUrl) { setGovIdPreview(null); return; }
+    let cancelled = false;
+    getGovIdUrl(user.id).then((url) => { if (!cancelled) setGovIdPreview(url); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [user?.id, user?.govIdUrl]);
   
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
@@ -114,7 +123,7 @@ export function EditProfile() {
 
       {success && (
         <div className="p-3.5 bg-emerald-50 border border-emerald-100 text-xs font-mono text-emerald-800 rounded-xl text-center">
-          ✓ Profile settings saved successfully! Simulating sandbox ledger updates.
+          ✓ Profile saved.
         </div>
       )}
 
@@ -281,11 +290,15 @@ export function EditProfile() {
               </div>
             )}
 
-            {user.govIdUrl && (
+            {user.govIdUrl && govIdPreview && (
               <div className="space-y-1 select-none">
                 <label className="text-[9px] font-mono text-slate-400 block font-bold uppercase tracking-widest">Active Document preview</label>
                 <div className="bg-slate-100 rounded-lg p-2.5 border border-slate-200">
-                  <img src={user.govIdUrl} alt="ID preview" referrerPolicy="no-referrer" className="w-full rounded" />
+                  {user.govIdUrl.toLowerCase().endsWith('.pdf') ? (
+                    <a href={govIdPreview} target="_blank" rel="noreferrer" className="text-xs text-[#B24724] font-semibold hover:underline">Open uploaded PDF</a>
+                  ) : (
+                    <img src={govIdPreview} alt="ID preview" referrerPolicy="no-referrer" className="w-full rounded" />
+                  )}
                 </div>
               </div>
             )}

@@ -14,9 +14,9 @@ import { ResponsiveImage } from '../components/ResponsiveImage';
 import { SDG_GOALS } from '../lib/sdg-data';
 import { COUNTRIES } from '../lib/countries';
 // @ts-ignore
-import boyHospitalSmile from '../assets/images/boy_hospital_smile_1780656337127.png';
+import boyHospitalSmile from '../assets/images/boy_hospital_smile_1780656337127.jpg';
 // @ts-ignore
-import girlHopeSprout from '../assets/images/girl_hope_sprout_1780660232833.png';
+import girlHopeSprout from '../assets/images/girl_hope_sprout_1780660232833.jpg';
 import {   ShieldCheck, 
   ArrowRight, 
   KeyRound, 
@@ -58,7 +58,7 @@ export function Login({
   preselectedRoles,
   redirectAfterAuth,
 }: LoginProps) {
-  const { login, signUp, loginSimulatedUser } = useAuth();
+  const { login, signUp } = useAuth();
   const loadingOverlay = useLoadingOverlay();
   // Choose wizard initial view
   const [wizardStep, setWizardStep] = useState<WizardStep>(mode === 'register' ? 'signup_step4' : 'welcome');
@@ -101,19 +101,6 @@ export function Login({
   const sdgSectorLabel = (goalNumber: number) => {
     const goal = SDG_GOALS.find((g) => g.number === goalNumber);
     return goal ? `${goal.number}. ${goal.name}` : String(goalNumber);
-  };
-
-  const handleSimulatedClick = async (simId: string) => {
-    setValidationError("");
-    loadingOverlay?.showLoading('Signing in');
-    try {
-      await loginSimulatedUser(simId);
-      onNavigate('dashboard');
-    } catch (err: unknown) {
-      setValidationError(err instanceof Error ? err.message : 'Demo login failed.');
-    } finally {
-      loadingOverlay?.hideLoading();
-    }
   };
 
   // Step transitions & validations
@@ -408,7 +395,7 @@ export function Login({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="E.g. donor@hopeworks.app"
+                    placeholder="you@example.com"
                     className="w-full py-3 px-3.5 border border-slate-200 outline-none rounded-xl focus:border-emerald-700 text-xs transition-all shadow-sm placeholder:text-slate-300 bg-[#FCFBF7]/30"
                   />
                 </div>
@@ -503,10 +490,6 @@ export function Login({
                 >
                   Don't have an account? <span className="font-bold text-[#B24724]">Sign Up</span>
                 </button>
-              </div>
-              
-              <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-[10px] text-slate-500 space-y-1 leading-normal">
-                <strong className="text-slate-700">Need a sandbox bypass?</strong> Use passwords: <strong className="text-orange-600 font-mono">donor123</strong>, <strong className="text-orange-600 font-mono font-semibold">vol123</strong>, or <strong className="text-orange-600 font-mono">owner123</strong> to enter pre-modeled profiles instantly.
               </div>
             </div>
           )}
@@ -844,44 +827,6 @@ export function Login({
           )}
 
         </WizardStepMotion>
-
-        {isLoginFlow && (
-          <div className="pt-6 border-t border-slate-100 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mt-8 shrink-0">
-            <div className="space-y-0.5 shrink-0">
-              <span className="text-[9.5px] font-sans font-bold uppercase tracking-wider text-slate-700 block select-none">
-                {wizardStep === 'welcome' ? 'Sandbox Role Switcher' : 'Secure Sandbox Gateway'}
-              </span>
-              <span className="text-[9px] text-slate-400 block leading-tight select-none">
-                {wizardStep === 'welcome'
-                  ? 'Instantly jump into simulated active profiles here:'
-                  : 'Bypass or transition into simulation profiles:'}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 w-full lg:flex lg:flex-wrap lg:w-auto lg:justify-end">
-              {([
-                { key: 'user-donor', label: 'Donor' },
-                { key: 'user-volunteer', label: 'Volunteer' },
-                { key: 'user-owner', label: 'Owner' },
-                { key: 'user-pm', label: 'PM' },
-                { key: 'user-admin', label: 'Admin' },
-              ] as const).map(({ key, label }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleSimulatedClick(key)}
-                  className={`py-2.5 lg:py-1 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[9px] font-mono font-bold border border-slate-200/60 text-center cursor-pointer select-none transition-all w-full lg:w-auto ${
-                    key === 'user-admin'
-                      ? 'col-span-2 w-1/2 justify-self-center lg:col-span-1 lg:w-auto lg:justify-self-auto'
-                      : ''
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
       </div>
 

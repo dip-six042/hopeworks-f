@@ -26,7 +26,7 @@ import {
   defaultViewport,
 } from '../lib/motion';
 // @ts-ignore
-import communityAboutImage from '../assets/images/community_about_image_1780924952669.png';
+import communityAboutImage from '../assets/images/community_about_image_1780924952669.jpg';
 
 const SDG_UNSPLASH_IMAGES: { [key: number]: string } = {
   1: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=90&w=1920",
@@ -357,7 +357,7 @@ export function Index({ onNavigate }: IndexProps) {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="max-w-3xl mx-auto text-slate-500 font-sans text-base sm:text-lg leading-relaxed tracking-wide"
           >
-            HopeWorks secures complete trust across boundaries. Pledged capital rests locked in an auditable escrow ledger. Appointed Product Managers verify physical proofs on the ground before any milestone funds disburse.
+            HopeWorks secures complete trust across boundaries. Pledged capital rests locked in an auditable escrow ledger. Independent Project Managers verify physical proofs on the ground before any milestone funds disburse.
           </motion.p>
 
           <motion.div
@@ -436,7 +436,7 @@ export function Index({ onNavigate }: IndexProps) {
               </div>
 
               <h2 className="text-fluid-heading sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-serif font-black text-white tracking-tight leading-[1.1] max-w-xl">
-                HopeWorks is a trusted leader in online fundraising.
+                Every pledge is tied to verified progress.
               </h2>
 
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans font-light max-w-xl">
@@ -634,7 +634,7 @@ export function Index({ onNavigate }: IndexProps) {
               <span className="font-mono text-[9px] uppercase tracking-widest text-emerald-400 bg-emerald-900/50 border border-emerald-900/30 px-2 py-0.5 rounded">Stage 01</span>
               <h4 className="font-serif font-semibold text-lg leading-tight text-white">Pledge & Lock Capital</h4>
               <p className="text-[11px] text-slate-300 leading-relaxed font-sans font-light">
-                Citizen pledges rest secured in an immutable local escrow contract. Your money remains untouched until concrete milestones are physically built.
+                Pledges are held in escrow, not paid out upfront. Your money remains untouched until concrete milestones are physically built.
               </p>
             </motion.div>
           </motion.div>
@@ -996,9 +996,9 @@ export function Index({ onNavigate }: IndexProps) {
             {timelineItems.length === 0 && (
               <div className="w-full text-center py-16 bg-white rounded-3xl border border-slate-100 space-y-3 shadow-xs">
                 <span className="text-2xl">🌱</span>
-                <p className="text-xs font-mono font-bold text-slate-700">Verification Ledger Offline</p>
+                <p className="text-xs font-mono font-bold text-slate-700">No activity yet</p>
                 <p className="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">
-                  Connect your civic sandbox to register initial community escrow transactions.
+                  Verified milestones and pledges will appear here as campaigns go live.
                 </p>
               </div>
             )}

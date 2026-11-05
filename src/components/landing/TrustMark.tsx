@@ -19,7 +19,7 @@ export function TrustMark({ onNavigate: _onNavigate }: TrustMarkProps = {}) {
     {
       icon: <Landmark className="h-5 w-5 text-[#B24724]" />,
       title: "Escrow Locked Funding",
-      desc: "Capital never streams all at once. Donations dwell inside a multi-sig escrow model released strictly on verifiable milestone completion."
+      desc: "Capital never streams all at once. Donations are held in escrow and released only when each milestone is independently verified."
     },
     {
       icon: <ShieldCheck className="h-5 w-5 text-[#B24724]" />,
