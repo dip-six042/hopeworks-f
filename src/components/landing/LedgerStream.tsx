@@ -12,7 +12,6 @@ interface LedgerItem {
   type: 'donation' | 'milestone_approval' | 'volunteer_accept' | 'escrow_lock' | 'badge_earned';
   title: string;
   details: string;
-  digest: string;
 }
 
 export function LedgerStream() {
@@ -32,9 +31,8 @@ export function LedgerStream() {
         id: `don-${d.id}`,
         timestamp: new Date(d.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: 'donation',
-        title: `Donation Manifest Received`,
-        details: `$${d.amount} allocated to "${proj?.title || 'SDG Campaign'}"`,
-        digest: `SHA256:${Math.random().toString(16).substr(2, 8).toUpperCase()}`
+        title: `Donation`,
+        details: `$${Number(d.amount).toLocaleString()} to "${proj?.title || d.projectName || 'a campaign'}"`
       });
     });
 
@@ -46,9 +44,8 @@ export function LedgerStream() {
             id: `mil-appr-${p.id}-${idx}`,
             timestamp: "Today",
             type: 'milestone_approval',
-            title: `Independent Audit Release`,
-            details: `Milestone "${m.title}" released ($${m.amount})`,
-            digest: `SHA256:${Math.random().toString(16).substr(2, 8).toUpperCase()}`
+            title: `Milestone approved`,
+            details: `"${m.title}" ($${Number(m.cost || 0).toLocaleString()})`
           });
         }
         if (m.status === 'submitted') {
@@ -56,9 +53,8 @@ export function LedgerStream() {
             id: `mil-sub-${p.id}-${idx}`,
             timestamp: "Active",
             type: 'escrow_lock',
-            title: `Evidence Submitted & Locked`,
-            details: `Milestone "${m.title}" is pending independent audit`,
-            digest: `SHA256:${Math.random().toString(16).substr(2, 8).toUpperCase()}`
+            title: `Waiting for review`,
+            details: `"${m.title}": proof submitted`
           });
         }
       });
@@ -99,17 +95,14 @@ export function LedgerStream() {
       <div className="flex items-center justify-between border-b border-slate-200/50 pb-3">
         <div className="flex items-center gap-2">
           <Eye className="h-4 w-4 text-[#B24724]" />
-          <h3 className="font-serif text-sm font-medium text-slate-800">Candid Ledger Ledger Stream</h3>
+          <h3 className="font-serif text-sm font-medium text-slate-800">Recent activity</h3>
         </div>
-        <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full animate-pulse">
-          ● AUDITED SECURE LIVE
-        </span>
       </div>
 
       <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
         {ledger.length === 0 ? (
           <div className="text-center py-8 text-xs font-mono text-slate-400">
-            Scanning for campaign ledger ledger updates...
+            Nothing yet. Donations and approved milestones will show up here.
           </div>
         ) : (
           ledger.map((item, index) => (
@@ -131,9 +124,6 @@ export function LedgerStream() {
                   <span className="text-[10px] text-slate-400 shrink-0">{item.timestamp}</span>
                 </div>
                 <p className="text-[11px] text-slate-500 truncate leading-snug">{item.details}</p>
-                <div className="text-[9px] text-slate-400 font-mono tracking-wider truncate bg-slate-50 py-0.5 px-1.5 inline-block rounded border border-slate-100">
-                  {item.digest}
-                </div>
               </div>
             </motion.div>
           ))

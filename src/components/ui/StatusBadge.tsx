@@ -40,7 +40,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     case 'active':
       bg = 'bg-teal-50 text-teal-800 border-teal-200/60';
       dot = 'bg-teal-500';
-      label = 'Active Campaign';
+      label = 'Live';
       break;
     case 'completed':
       bg = 'bg-indigo-50 text-indigo-800 border-indigo-200/60';

@@ -63,3 +63,9 @@ export async function apiPublicFetch<T>(
   if (res.status === 204) return undefined as T;
   return res.json();
 }
+
+/** Get a short-lived link to view a user's private ID document (self or admin). */
+export async function getGovIdUrl(userId: string): Promise<string> {
+  const { url } = await apiFetch<{ url: string }>(`/api/users/${userId}/gov-id`);
+  return url;
+}

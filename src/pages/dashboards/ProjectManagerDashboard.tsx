@@ -126,8 +126,8 @@ export function ProjectManagerDashboard({
         <div className="p-4 bg-orange-50/50 border border-orange-200/60 rounded-2xl flex gap-3.5 text-xs text-[#B24724] select-none animate-pulse">
           <ShieldAlert className="h-5 w-5 text-[#B24724] shrink-0" />
           <div className="space-y-0.5">
-            <h5 className="font-bold font-mono text-[11px] uppercase tracking-wider">ACTIVE FIELD EVIDENCE FOR MILIEU AUDITING ({auditQueue.length})</h5>
-            <p className="text-[11.5px] text-slate-600 leading-normal font-sans">Campaign creators have lodged physical logs and sweat equity worksheets. Inquire onsite, review evidence, and execute payout releases.</p>
+            <h5 className="font-bold font-mono text-[11px] uppercase tracking-wider">EVIDENCE WAITING FOR REVIEW ({auditQueue.length})</h5>
+            <p className="text-[11.5px] text-slate-600 leading-normal font-sans">Project owners have submitted milestone evidence. Review it carefully before approving — approval marks that milestone's funds for release.</p>
           </div>
         </div>
       )}
@@ -137,46 +137,48 @@ export function ProjectManagerDashboard({
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Appointed Monitored</span>
+              <span>Assigned campaigns</span>
               <span className="text-[10px] text-[#B24724] bg-orange-50 px-1 py-0.2 rounded-md font-bold font-mono">Assigned</span>
             </div>
             <p className="font-serif font-black text-2xl text-slate-900">{pmProjects.length} Campaigns</p>
-            <p className="text-[10px] text-slate-400 font-mono">Official Regulatory Appoints</p>
+            <p className="text-[10px] text-slate-400 font-mono">Campaigns you review</p>
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Auditing Queue</span>
+              <span>Review queue</span>
               <span className="text-[10px] text-amber-600 bg-amber-50 px-1 py-0.2 rounded-md font-bold font-mono animate-pulse">Active</span>
             </div>
             <p className="font-serif font-black text-2xl text-slate-900">{auditQueue.length} Pending</p>
-            <p className="text-[10px] text-slate-400 font-mono">Audit Evidence Submissions</p>
+            <p className="text-[10px] text-slate-400 font-mono">Milestones awaiting your decision</p>
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Disbursed Verified</span>
-              <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded-md font-bold font-mono">100% Safe</span>
+              <span>Approved for release</span>
             </div>
             <p className="font-serif font-black text-2xl text-emerald-700">
-              ${(pmProjects.length * 12500 || 25000).toLocaleString()}
+              ${pmProjects.reduce((sum, p) => sum + (p?.milestones ?? []).filter((m) => m.status === 'approved').reduce((s2, m) => s2 + Number(m.cost || 0), 0), 0).toLocaleString()}
             </p>
-            <p className="text-[10px] text-slate-400 font-mono">Released escrow values</p>
+            <p className="text-[10px] text-slate-400 font-mono">Value of milestones you approved</p>
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Auditor Rating</span>
-              <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1 py-0.2 rounded-md font-bold font-mono">Level III</span>
+              <span>Milestones approved</span>
             </div>
-            <p className="font-serif font-black text-2xl text-indigo-700">9.8 / 10</p>
-            <p className="text-[10px] text-slate-400 font-mono">Public registry feedback rank</p>
+            <p className="font-serif font-black text-2xl text-indigo-700">
+              {pmProjects.reduce((n, p) => n + (p?.milestones ?? []).filter((m) => m.status === 'approved').length, 0)}
+              {' / '}
+              {pmProjects.reduce((n, p) => n + (p?.milestones ?? []).length, 0)}
+            </p>
+            <p className="text-[10px] text-slate-400 font-mono">Across your campaigns</p>
           </div>
         </div>
       </div>
@@ -224,12 +226,12 @@ export function ProjectManagerDashboard({
                     className="rounded text-[#B24724] focus:ring-[#B24724] cursor-pointer"
                   />
                 </th>
-                <th className="py-3 px-4">APPOINTED CAMPAIGN</th>
-                <th className="py-3 px-4">CREATOR OWNER</th>
-                <th className="py-3 px-4">ESCROW CAPITAL</th>
+                <th className="py-3 px-4">CAMPAIGN</th>
+                <th className="py-3 px-4">OWNER</th>
+                <th className="py-3 px-4">RAISED</th>
                 <th className="py-3 px-4">STATUS</th>
-                <th className="py-3 px-4">PENDING LOGS</th>
-                <th className="py-3 px-4">PRECISION FIDELITY</th>
+                <th className="py-3 px-4">TO REVIEW</th>
+                <th className="py-3 px-4">MILESTONES DONE</th>
                 <th className="py-3 px-4 text-right">ACTION</th>
               </tr>
             </thead>
@@ -239,9 +241,9 @@ export function ProjectManagerDashboard({
                 const isSelected = selectedRows.includes(proj.id);
                 const submittedMilestonesCount = proj.milestones.filter(m => m.status === 'submitted').length;
                 const approvedCount = proj.milestones.filter(m => m.status === 'approved').length;
-                const fidelityScore = proj.milestones.length > 0
-                  ? Math.min(10, Math.max(7, 7 + Math.round((approvedCount / proj.milestones.length) * 3)))
-                  : submittedMilestonesCount > 0 ? 8 : 9;
+                const milestoneProgress = proj.milestones.length > 0
+                  ? Math.round((approvedCount / proj.milestones.length) * 10)
+                  : 0;
 
                 return (
                   <tr 
@@ -270,7 +272,7 @@ export function ProjectManagerDashboard({
                         </div>
                         <div>
                           <p className="font-serif font-black text-slate-800 text-xs leading-none group-hover:text-[#B24724] transition-colors">{proj.title}</p>
-                          <span className="text-[9px] font-mono text-slate-400 mt-1 block">Independent auditor endpoint</span>
+                          
                         </div>
                       </div>
                     </td>
@@ -295,18 +297,18 @@ export function ProjectManagerDashboard({
                     <td className="py-3 px-4">
                       {submittedMilestonesCount > 0 ? (
                         <span className="inline-flex items-center gap-1 text-[9px] font-mono tracking-wider font-extrabold bg-[#B24724]/10 text-[#B24724] px-2.5 py-0.5 rounded-full border border-orange-100 animate-pulse select-none">
-                          <AlertCircle className="h-2.5 w-2.5" /> {submittedMilestonesCount} Review events
+                          <AlertCircle className="h-2.5 w-2.5" /> {submittedMilestonesCount} to review
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 text-[9px] font-mono tracking-wider font-semibold bg-slate-50 text-slate-450 px-2 py-0.5 rounded-full border">
-                          No pending logs
+                          Nothing to review
                         </span>
                       )}
                     </td>
 
                     {/* Diligence Rating bars */}
                     <td className="py-3 px-4">
-                      <ScoreBars score={fidelityScore} />
+                      <ScoreBars score={milestoneProgress} />
                     </td>
 
                     {/* Redirection */}
@@ -345,12 +347,12 @@ export function ProjectManagerDashboard({
             <GraduationCap className="h-5 w-5" />
           </div>
           <div className="space-y-0.5">
-            <h5 className="font-bold text-slate-800 text-xs font-serif leading-none">Certified Field Auditor Registry</h5>
-            <p className="text-[11px] text-slate-500 font-sans leading-tight">By law, you must maintain objective neutral surveillance logs. Approval signals instant smart contract disbursement releases.</p>
+            <h5 className="font-bold text-slate-800 text-xs font-serif leading-none">Reviewer responsibilities</h5>
+            <p className="text-[11px] text-slate-500 font-sans leading-tight">Review evidence independently and declare any conflict of interest. Only approve milestones you are satisfied are complete.</p>
           </div>
         </div>
         <div className="rounded-lg bg-orange-50 p-2.5 px-4 text-slate-650 font-mono text-[10px] border border-orange-100 flex items-center gap-1.5">
-          <CheckCircle className="h-4 w-4 text-[#B24724]" /> Active verification rights enabled
+          <CheckCircle className="h-4 w-4 text-[#B24724]" /> You can approve or reject milestones
         </div>
       </div>
 

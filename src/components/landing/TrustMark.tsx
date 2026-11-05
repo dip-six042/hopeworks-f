@@ -13,23 +13,23 @@ export function TrustMark({ onNavigate: _onNavigate }: TrustMarkProps = {}) {
   const principles = [
     {
       icon: <Percent className="h-5 w-5 text-[#B24724]" />,
-      title: "5% Platform Fee",
-      desc: "Disclosed clearly upfront. Taken directly from total donation volume to fuel server uptime and independent audit support services."
+      title: "5% platform fee",
+      desc: "We keep 5% of each donation to cover payment fees, reviews and running the site. You see it before you pay."
     },
     {
       icon: <Landmark className="h-5 w-5 text-[#B24724]" />,
-      title: "Escrow Locked Funding",
-      desc: "Capital never streams all at once. Donations dwell inside a multi-sig escrow model released strictly on verifiable milestone completion."
+      title: "Paid in stages",
+      desc: "Projects don't get everything upfront. Money is released only when each milestone has been checked."
     },
     {
       icon: <ShieldCheck className="h-5 w-5 text-[#B24724]" />,
-      title: "Independent PM Check",
-      desc: "Every milestone verification requires a vetted, third-party citizen Project Manager to cross-examine uploaded field evidence."
+      title: "Independent checks",
+      desc: "A Project Manager with no link to the project reviews the proof for every milestone."
     },
     {
       icon: <Layers className="h-5 w-5 text-[#B24724]" />,
-      title: "SDG Structured Impact",
-      desc: "All campaigns map precisely to the 17 UN Sustainable Development Goals, preventing greenwashing and securing focus."
+      title: "Linked to the UN goals",
+      desc: "Every campaign is tagged with the UN Sustainable Development Goals it works towards, so you can find causes you care about."
     }
   ];
 
@@ -37,10 +37,10 @@ export function TrustMark({ onNavigate: _onNavigate }: TrustMarkProps = {}) {
     <div className="border border-[#B24724]/20 bg-[#FAF9F6] rounded-3xl p-6 sm:p-10 space-y-8">
       <Reveal direction="bouncy" className="max-w-2xl">
         <span className="text-[10px] bg-[#B24724]/10 text-[#B24724] px-3 py-1 rounded-full font-mono font-bold uppercase tracking-wider mb-3 inline-block">
-          Rigorous Trust Assurance
+          Why it's safe
         </span>
         <h3 className="text-2xl sm:text-3xl font-serif text-slate-800 tracking-tight leading-snug">
-          How HopeWorks absolute auditability protects your civic contributions.
+          How we protect your donation.
         </h3>
       </Reveal>
 

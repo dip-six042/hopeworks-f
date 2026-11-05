@@ -22,11 +22,12 @@ export function BigNumbers() {
       .catch(() => setStats(null));
   }, []);
 
+  // Money donated but not yet released = raised minus the cost of approved milestones (never below 0 per project).
   const totalInEscrow = projects.reduce((sum, p) => {
-    const fundedMilestonesValue = p.milestones
-      .filter(m => m.status !== 'approved')
+    const released = p.milestones
+      .filter(m => m.status === 'approved')
       .reduce((mSum, m) => mSum + (m.cost || 0), 0);
-    return sum + (p.status === 'active' ? fundedMilestonesValue : 0);
+    return sum + Math.max(0, (p.fundingRaised || 0) - released);
   }, 0);
 
   const approvedMilestones = projects.reduce((sum, p) => {
@@ -38,36 +39,36 @@ export function BigNumbers() {
 
   const displayStats = [
     {
-      value: totalDonated / 1000,
+      value: totalDonated,
       prefix: '$',
-      suffix: 'k',
-      decimals: 1,
-      label: "Impact Funds Received",
-      help: "Directly tracked via public ledger"
+      suffix: '',
+      decimals: 0,
+      label: "Donated so far",
+      help: "Confirmed donations"
     },
     {
-      value: totalInEscrow / 1000,
+      value: totalInEscrow,
       prefix: '$',
-      suffix: 'k',
-      decimals: 1,
-      label: "Currently in Escrow",
-      help: "Locked until independent PM approval"
+      suffix: '',
+      decimals: 0,
+      label: "Waiting to be released",
+      help: "Paid out as milestones are approved"
     },
     {
       value: approvedMilestones,
       prefix: '',
       suffix: '',
       decimals: 0,
-      label: "Verified Milestones",
-      help: "Rigorous evidence checked by PMs"
+      label: "Milestones completed",
+      help: "Checked by a Project Manager"
     },
     {
       value: activeVolunteersCount,
       prefix: '',
       suffix: '',
       decimals: 0,
-      label: "Active Contributors",
-      help: stats ? `${stats.activeProjects} active campaigns` : "Volunteers serving high-priority SDGs"
+      label: "Volunteers",
+      help: stats ? `${stats.activeProjects} live campaigns` : ""
     }
   ];
 

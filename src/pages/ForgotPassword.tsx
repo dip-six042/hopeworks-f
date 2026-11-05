@@ -70,7 +70,7 @@ export function ForgotPassword({ onNavigate }: ForgotPasswordProps) {
                 <input
                   type="email"
                   required
-                  placeholder="e.g. donor@hopeworks.app"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full py-3 pl-10 pr-4 border border-slate-200 outline-none rounded-xl focus:border-[#B24724] font-sans text-sm transition-colors"
@@ -128,7 +128,7 @@ export function ForgotPassword({ onNavigate }: ForgotPasswordProps) {
               onClick={() => onNavigate('login')}
               className="py-2 px-4 text-xs font-mono"
             >
-              Go Back to Login Gateway
+              Back to sign in
             </PillButton>
           </motion.div>
         )}

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Facebook, Youtube, Instagram, Twitter, Shield, X } from 'lucide-react';
+import { Shield, X } from 'lucide-react';
 import { Logo } from './Logo';
-import { StaggerChildren } from './motion/StaggerChildren';
 import { Reveal } from './motion/Reveal';
 import { ModalMotion } from './motion/ModalMotion';
 import { springBouncy } from '../lib/motion';
@@ -82,26 +81,10 @@ export function Footer({ onNavigate }: FooterProps) {
               <Logo iconSize={18} showText={true} textColorClass="text-slate-200" className="inline-flex" />
             </div>
             <p className="text-[10px] text-slate-600 font-mono">
-              High-Integrity SDG Milestone escrow. Registered Public Benefits Crowdfunding.
+              Milestone-verified crowdfunding for the UN Sustainable Development Goals.
             </p>
           </div>
 
-          {/* Social Icons matching NEVON MEDIA layout */}
-          <StaggerChildren className="flex items-center gap-3" stagger={0.08}>
-            {[Facebook, Youtube, Instagram, Twitter].map((Icon, i) => (
-              <motion.a
-                key={i}
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="h-9 w-9 rounded-full border border-slate-800 bg-slate-950/40 flex items-center justify-center text-slate-400 hover:text-orange-500 hover:border-orange-500 transition-all cursor-pointer"
-                whileHover={{ y: -3, scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                transition={springBouncy}
-              >
-                <Icon className="h-4 w-4" />
-              </motion.a>
-            ))}
-          </StaggerChildren>
 
         </Reveal>
 

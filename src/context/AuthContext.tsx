@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { UserProfile, UserRole } from '../types';
 import { supabase } from '../lib/supabase';
 import { apiFetch, apiPublicFetch, apiUpload } from '../lib/apiClient';
-import { DEMO_ACCOUNTS } from '../lib/demoAccounts';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -16,7 +15,6 @@ interface AuthContextType {
     password: string,
     profileExtras?: { location?: string; fundraisingCategories?: string[] }
   ) => Promise<UserProfile>;
-  loginSimulatedUser: (userId: string) => Promise<void>;
   signInWithOAuth: (provider: 'google' | 'apple') => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
@@ -111,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setUsers([]);
@@ -159,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const profile = await ensureProfile();
       if (!profile) {
-        throw new Error('Profile not found after login. Run `cd backend && npm run seed` if using demo accounts.');
+        throw new Error('Profile not found after login.');
       }
       if (profile.roles.includes('admin')) await refreshUsers();
       sessionBootstrapped.current = true;
@@ -282,21 +280,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.assign(data.url);
   };
 
-  const loginSimulatedUser = async (simKey: string) => {
-    const demo = DEMO_ACCOUNTS[simKey];
-    if (demo) {
-      await login(demo.email, demo.password);
-      return;
-    }
-    const found = users.find(u => u.id === simKey);
-    if (found) {
-      const byEmail = Object.values(DEMO_ACCOUNTS).find(d => d.email === found.email);
-      if (byEmail) await login(byEmail.email, byEmail.password);
-      return;
-    }
-    throw new Error('Demo account not found. Use email login or run npm run seed.');
-  };
-
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -316,8 +299,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const uploadGovId = async (base64Data: string, fileName = 'gov-id', contentType = 'application/octet-stream') => {
     if (!user) return;
-    const { url } = await apiUpload('gov-ids', fileName, base64Data, contentType);
-    await updateProfile({ govIdUrl: url, verificationStatus: 'pending' });
+    const { path } = await apiUpload('gov-ids', fileName, base64Data, contentType);
+    await updateProfile({ govIdUrl: path, verificationStatus: 'pending' });
   };
 
   const verifyUser = async (userId: string, action: 'approve' | 'reject') => {
@@ -347,7 +330,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       login,
       signUp,
-      loginSimulatedUser,
       signInWithOAuth,
       logout,
       updateProfile,

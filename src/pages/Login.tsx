@@ -14,9 +14,9 @@ import { ResponsiveImage } from '../components/ResponsiveImage';
 import { SDG_GOALS } from '../lib/sdg-data';
 import { COUNTRIES } from '../lib/countries';
 // @ts-ignore
-import boyHospitalSmile from '../assets/images/boy_hospital_smile_1780656337127.png';
+import boyHospitalSmile from '../assets/images/boy_hospital_smile_1780656337127.jpg';
 // @ts-ignore
-import girlHopeSprout from '../assets/images/girl_hope_sprout_1780660232833.png';
+import girlHopeSprout from '../assets/images/girl_hope_sprout_1780660232833.jpg';
 import {   ShieldCheck, 
   ArrowRight, 
   KeyRound, 
@@ -58,7 +58,7 @@ export function Login({
   preselectedRoles,
   redirectAfterAuth,
 }: LoginProps) {
-  const { login, signUp, loginSimulatedUser } = useAuth();
+  const { login, signUp } = useAuth();
   const loadingOverlay = useLoadingOverlay();
   // Choose wizard initial view
   const [wizardStep, setWizardStep] = useState<WizardStep>(mode === 'register' ? 'signup_step4' : 'welcome');
@@ -101,19 +101,6 @@ export function Login({
   const sdgSectorLabel = (goalNumber: number) => {
     const goal = SDG_GOALS.find((g) => g.number === goalNumber);
     return goal ? `${goal.number}. ${goal.name}` : String(goalNumber);
-  };
-
-  const handleSimulatedClick = async (simId: string) => {
-    setValidationError("");
-    loadingOverlay?.showLoading('Signing in');
-    try {
-      await loginSimulatedUser(simId);
-      onNavigate('dashboard');
-    } catch (err: unknown) {
-      setValidationError(err instanceof Error ? err.message : 'Demo login failed.');
-    } finally {
-      loadingOverlay?.hideLoading();
-    }
   };
 
   // Step transitions & validations
@@ -163,7 +150,7 @@ export function Login({
       return;
     }
     if (roles.length === 0) {
-      setValidationError("At least one civic role must be configured.");
+      setValidationError("Please pick a role.");
       return;
     }
 
@@ -230,7 +217,7 @@ export function Login({
 
   const handleStep4Continue = () => {
     if (roles.length === 0) {
-      setValidationError("Please configure at least one civic role to continue your registration.");
+      setValidationError("Please pick a role to continue.");
       return;
     }
     setValidationError("");
@@ -278,7 +265,7 @@ export function Login({
           >
             <Logo iconSize={30} showText={true} />
             <span className="text-[10px] font-mono tracking-widest text-[#B24724] font-black uppercase border-l border-slate-200 pl-2.5 hidden sm:inline-block">
-              Connection Gateway
+              {wizardStep.startsWith('signup') ? 'Sign up' : 'Sign in'}
             </span>
           </div>
 
@@ -408,7 +395,7 @@ export function Login({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="E.g. donor@hopeworks.app"
+                    placeholder="you@example.com"
                     className="w-full py-3 px-3.5 border border-slate-200 outline-none rounded-xl focus:border-emerald-700 text-xs transition-all shadow-sm placeholder:text-slate-300 bg-[#FCFBF7]/30"
                   />
                 </div>
@@ -446,10 +433,10 @@ export function Login({
             <div className="space-y-6">
               <div className="space-y-1.5 select-none">
                 <h2 className="text-3xl font-serif font-black text-slate-900 tracking-tight leading-none">
-                  Authorize Credentials
+                  Enter your password
                 </h2>
                 <div className="text-xs text-slate-400">
-                  Securely logging in as: <span className="font-mono text-emerald-800 font-bold">{email}</span>
+                  Signing in as <span className="font-mono text-emerald-800 font-bold">{email}</span>
                 </div>
               </div>
 
@@ -461,7 +448,7 @@ export function Login({
                   <PasswordInput
                     required
                     autoFocus
-                    placeholder="e.g. donor123"
+                    placeholder="Your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full py-3 px-4 border border-slate-200 outline-none rounded-xl focus:border-orange-600 font-sans text-sm transition-colors shadow-sm"
@@ -488,7 +475,7 @@ export function Login({
                   hoveredTextColor="#ffffff"
                   Icon={ArrowRight}
                 >
-                  {loading ? 'Signing in...' : 'Sign In To Terminal'}
+                  {loading ? 'Signing in...' : 'Sign In'}
                 </PillButton>
               </form>
 
@@ -504,10 +491,6 @@ export function Login({
                   Don't have an account? <span className="font-bold text-[#B24724]">Sign Up</span>
                 </button>
               </div>
-              
-              <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-[10px] text-slate-500 space-y-1 leading-normal">
-                <strong className="text-slate-700">Need a sandbox bypass?</strong> Use passwords: <strong className="text-orange-600 font-mono">donor123</strong>, <strong className="text-orange-600 font-mono font-semibold">vol123</strong>, or <strong className="text-orange-600 font-mono">owner123</strong> to enter pre-modeled profiles instantly.
-              </div>
             </div>
           )}
 
@@ -519,10 +502,10 @@ export function Login({
                   Step 2 of {signupStepCount}
                 </span>
                 <h3 className="text-2xl font-serif font-black text-slate-950 tracking-tight">
-                  Let's begin your fundraising journey
+                  Where are you based?
                 </h3>
                 <p className="text-xs text-slate-400">
-                  We're here to guide you every step of the way.
+                  This helps people find projects near them.
                 </p>
               </div>
 
@@ -556,7 +539,7 @@ export function Login({
                       required
                       value={stateRegion}
                       onChange={(e) => setStateRegion(e.target.value)}
-                      placeholder="e.g. Lagos, California, Ontario"
+                      placeholder="e.g. Lagos, Nigeria"
                       className="w-full p-3 border border-slate-200 outline-none rounded-xl text-xs font-semibold text-slate-700 shadow-sm focus:border-emerald-700"
                     />
                   </div>
@@ -629,10 +612,10 @@ export function Login({
                   Step 1 of {signupStepCount}
                 </span>
                 <h3 className="text-2xl font-serif font-black text-slate-950 tracking-tight">
-                  Assign your citizen roles
+                  How will you use HopeWorks?
                 </h3>
                 <p className="text-xs text-slate-400">
-                  Choose one citizen role for your HopeWorks profile.
+                  Pick one. You can ask us to add more later.
                 </p>
               </div>
 
@@ -643,7 +626,7 @@ export function Login({
                     id: 'entrepreneur',
                     title: 'Project Owner',
                     abbr: 'PO',
-                    desc: 'Runs accountable, milestone-based campaigns and recruits volunteers.',
+                    desc: 'Start a campaign and get funded one milestone at a time.',
                     badge: 'PO',
                     activeColor: 'border-[#0B4F35] bg-[#0B4F35]/5',
                     badgeBg: 'bg-[#0B4F35] text-white',
@@ -651,9 +634,9 @@ export function Login({
                   },
                   {
                     id: 'donor',
-                    title: 'Donor / Sponsor',
+                    title: 'Donor',
                     abbr: 'DO',
-                    desc: 'Funds work they can verify, with a full ledger from contribution to delivery.',
+                    desc: 'Give to projects and see exactly where the money goes.',
                     badge: 'DO',
                     activeColor: 'border-[#A9441B] bg-[#A9441B]/5',
                     badgeBg: 'bg-[#A9441B] text-white',
@@ -663,7 +646,7 @@ export function Login({
                     id: 'volunteer',
                     title: 'Volunteer',
                     abbr: 'VO',
-                    desc: 'Contributes time + skills, sets availability, earns verified recognition.',
+                    desc: 'Offer your time and skills to projects near you.',
                     badge: 'VO',
                     activeColor: 'border-[#133863] bg-[#133863]/5',
                     badgeBg: 'bg-[#133863] text-white',
@@ -673,7 +656,7 @@ export function Login({
                     id: 'project_manager',
                     title: 'Project Manager',
                     abbr: 'PM',
-                    desc: 'Independently audits milestone evidence on assigned campaigns and certifies escrow releases.',
+                    desc: 'Review proof for campaigns an admin assigns to you.',
                     badge: 'PM',
                     activeColor: 'border-[#704A0E] bg-[#704A0E]/5',
                     badgeBg: 'bg-[#704A0E] text-white',
@@ -793,7 +776,7 @@ export function Login({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="E.g. Harrison Eldo"
+                    placeholder="Your full name"
                     className="w-full p-3.5 border border-slate-200 outline-none rounded-xl focus:border-emerald-750 text-sm shadow-sm"
                   />
                 </div>
@@ -845,44 +828,6 @@ export function Login({
 
         </WizardStepMotion>
 
-        {isLoginFlow && (
-          <div className="pt-6 border-t border-slate-100 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mt-8 shrink-0">
-            <div className="space-y-0.5 shrink-0">
-              <span className="text-[9.5px] font-sans font-bold uppercase tracking-wider text-slate-700 block select-none">
-                {wizardStep === 'welcome' ? 'Sandbox Role Switcher' : 'Secure Sandbox Gateway'}
-              </span>
-              <span className="text-[9px] text-slate-400 block leading-tight select-none">
-                {wizardStep === 'welcome'
-                  ? 'Instantly jump into simulated active profiles here:'
-                  : 'Bypass or transition into simulation profiles:'}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 w-full lg:flex lg:flex-wrap lg:w-auto lg:justify-end">
-              {([
-                { key: 'user-donor', label: 'Donor' },
-                { key: 'user-volunteer', label: 'Volunteer' },
-                { key: 'user-owner', label: 'Owner' },
-                { key: 'user-pm', label: 'PM' },
-                { key: 'user-admin', label: 'Admin' },
-              ] as const).map(({ key, label }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleSimulatedClick(key)}
-                  className={`py-2.5 lg:py-1 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[9px] font-mono font-bold border border-slate-200/60 text-center cursor-pointer select-none transition-all w-full lg:w-auto ${
-                    key === 'user-admin'
-                      ? 'col-span-2 w-1/2 justify-self-center lg:col-span-1 lg:w-auto lg:justify-self-auto'
-                      : ''
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
       </div>
 
       {/* RIGHT COLUMN: BEAUTIFUL HELPING HANDS HIGH CONTRAST COVER T TREATMENT */}
@@ -909,13 +854,13 @@ export function Login({
         <div className="absolute bottom-8 left-8 right-8 bg-black/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 z-20 space-y-2">
           <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[9px] uppercase tracking-widest font-bold">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>UN SDG ESCROW TECHNOLOGY</span>
+            <span>HOW HOPEWORKS WORKS</span>
           </div>
           <h4 className="text-white font-serif italic text-lg leading-snug font-bold">
-            "We fund transparent campaigns matched to UN development milestones, backed by verified third-party PM auditors."
+            Every donation is held and paid out in stages, after someone independent checks the work.
           </h4>
           <span className="block text-[9px] text-[#FAF9F6]/60 font-mono uppercase font-semibold">
-            HopeWorks Foundation Trust Protocol
+            HopeWorks
           </span>
         </div>
 

@@ -5,7 +5,7 @@ import { UserRole } from '../types';
 interface RoleGateProps {
   allowedRoles: UserRole[];
   userRoles: UserRole[];
-  children: React.ReactNode;
+  children?: React.ReactNode;
   message?: string;
   compact?: boolean;
 }

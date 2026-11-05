@@ -9,6 +9,7 @@ import { Check, ClipboardList, Target, Users, Calendar, ArrowRight, ArrowLeft, I
 import { PillButton } from '../components/PillButton';
 import { SectorCategoryInput } from '../components/SectorCategoryInput';
 import { ResponsiveImage } from '../components/ResponsiveImage';
+import { VolunteerDatesPicker } from '../components/VolunteerDatesPicker';
 
 const COVER_PRESETS = [
   { label: 'Plumbing & Pipes', url: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80&w=1200' },
@@ -207,7 +208,7 @@ export function CreateCampaign({ onNavigate }: CreateCampaignProps) {
       };
 
       const launched = await createCampaign(payload);
-      toast.success(`Success! Campaign "${launched.title}" has been securely established on our public benefits sandbox ledger.`);
+      toast.success(`Success! Campaign "${launched.title}" has been submitted for admin review.`);
       onNavigate('project_detail', launched.id);
     } catch (e: any) {
       setError(e?.message || "Failed to launch campaign.");
@@ -246,7 +247,7 @@ export function CreateCampaign({ onNavigate }: CreateCampaignProps) {
           <div className="space-y-5">
             <div className="space-y-1">
               <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest block font-bold">Launch Workspace / Step 1</span>
-              <h2 className="font-serif font-black text-xl text-slate-900">Define your Civic Campaign Basics</h2>
+              <h2 className="font-serif font-black text-xl text-slate-900">The basics</h2>
               <p className="text-xs text-slate-500">Provide an engaging title, short summary, and pick align SDGs.</p>
             </div>
 

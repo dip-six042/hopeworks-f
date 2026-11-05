@@ -31,7 +31,8 @@ import {
   userCanPerformAction,
   viewToPanel,
 } from './lib/roleAccess';
-import { UserRole } from './types';
+import { UserRole, Donation } from './types';
+import { apiFetch } from './lib/apiClient';
 import { clearNav, readInitialNav, saveNav } from './lib/navPersistence';
 import {
   clearCampaignShareUrl,
@@ -91,7 +92,7 @@ function AppContent() {
       setView('reset_password');
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setView('reset_password');
       }
@@ -126,6 +127,33 @@ function AppContent() {
       if (safe !== dashboardPanel) setDashboardPanel(safe);
     }
   }, [authLoading, user, view, dashboardPanel]);
+
+  // Returning from Kora checkout: /?payment_ref=HW-...
+  useEffect(() => {
+    if (authLoading || !user) return;
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('payment_ref') || params.get('reference');
+    if (!ref || !ref.startsWith('HW-')) return;
+    params.delete('payment_ref');
+    params.delete('reference');
+    const qs = params.toString();
+    window.history.replaceState(null, '', window.location.pathname + (qs ? `?${qs}` : ''));
+
+    apiFetch<Donation>(`/api/donations/verify/${encodeURIComponent(ref)}`)
+      .then((d) => {
+        if (d.status === 'paid') {
+          toast.success(`Thank you! Your ${d.amount.toLocaleString()} ${d.currency ?? ''} donation to "${d.projectName}" is confirmed and held in escrow.`);
+        } else if (d.status === 'failed') {
+          toast.error('Your payment did not go through. You have not been charged.');
+        } else {
+          toast.info('Your payment is still processing. We\'ll notify you once it\'s confirmed.');
+        }
+        setSelectedProjectId(d.projectId);
+        setView('dashboard');
+        setDashboardPanel('project_detail');
+      })
+      .catch(() => toast.error('We could not confirm your payment yet. If you were charged, it will appear shortly.'));
+  }, [authLoading, user]);
 
   useEffect(() => {
     if (authLoading) return;

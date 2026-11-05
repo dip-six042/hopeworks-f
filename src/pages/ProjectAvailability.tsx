@@ -103,10 +103,10 @@ export function ProjectAvailability({ onNavigate, initialProjectId }: ProjectAva
           COORDINATED VOLUNTEER CALENDARS
         </span>
         <h1 className="text-3xl sm:text-4xl font-serif font-normal text-slate-900 tracking-tight">
-          Select Campaign Slot Availability
+          Your availability
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
-          Select which days you have field-readiness to secure goals and supply hours. Project owners can review this ledger aggregate before dispatching team invites.
+          Pick the days you're free to help. Project owners can see this when planning their team.
         </p>
       </div>
 

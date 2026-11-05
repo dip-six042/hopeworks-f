@@ -19,7 +19,7 @@ type Step = 'amount' | 'payment' | 'receipt';
 export function DonateDialog({ project, onClose, onSuccess }: DonateDialogProps) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { createDonation } = useDonationsStore();
+  const { startCheckout } = useDonationsStore();
 
   const [step, setStep] = useState<Step>('amount');
   const [amount, setAmount] = useState<number>(50);
@@ -61,8 +61,8 @@ export function DonateDialog({ project, onClose, onSuccess }: DonateDialogProps)
       setError(getActionDeniedMessage('donate'));
       return false;
     }
-    if (amount <= 0) {
-      setError('Please select or enter a positive contribution pledge.');
+    if (amount <= 0 || !Number.isInteger(amount)) {
+      setError('Please enter a whole-number amount greater than zero.');
       return false;
     }
     if (amount > 100000) {
@@ -76,36 +76,29 @@ export function DonateDialog({ project, onClose, onSuccess }: DonateDialogProps)
     return true;
   };
 
-  const handleContinueToPayment = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePay = async () => {
     if (!validateAmount()) return;
-    setStep('payment');
-  };
-
-  const handleMockPayment = async () => {
-    if (!validateAmount()) return;
-
     setIsSubmitting(true);
     setError('');
     try {
-      const created = await createDonation({
+      const { checkoutUrl } = await startCheckout({
         projectId: project.id,
-        projectName: project.title,
         amount,
         isAnonymous,
         message: message.trim() || undefined,
       });
-      setReceipt(created);
-      setStep('receipt');
-      toast.success(`$${amount.toLocaleString()} locked in escrow for "${project.title}".`);
+      window.location.assign(checkoutUrl);
     } catch (err: unknown) {
-      const msg = (err as Error)?.message || 'An unexpected error occurred during checkout.';
-      setError(msg.includes('403') || msg.includes('donor')
-        ? getActionDeniedMessage('donate')
-        : msg);
-    } finally {
+      const msg = (err as Error)?.message || 'Could not start checkout. Please try again.';
+      setError(msg.includes('403') || msg.includes('donor') ? getActionDeniedMessage('donate') : msg);
       setIsSubmitting(false);
     }
+  };
+
+  const handleContinueToPayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateAmount()) return;
+    setStep('payment');
   };
 
   const handleDone = () => {
@@ -178,6 +171,9 @@ export function DonateDialog({ project, onClose, onSuccess }: DonateDialogProps)
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm">$</span>
                 <input
                   type="number"
+                  min={1}
+                  step={1}
+                  inputMode="numeric"
                   placeholder="Custom Amount"
                   value={customAmount}
                   onChange={handleCustomChange}
@@ -256,43 +252,45 @@ export function DonateDialog({ project, onClose, onSuccess }: DonateDialogProps)
                 {error}
               </div>
             )}
-            <div className="p-4 bg-[#FFEDD5]/40 border border-orange-100 rounded-xl space-y-2">
-              <div className="flex items-center gap-2 text-[#B24724]">
-                <Wallet className="h-5 w-5" />
-                <span className="text-sm font-semibold">HopeWorks Sandbox Wallet</span>
+              <div className="space-y-4">
+                <div className="p-4 bg-[#FFEDD5]/40 border border-orange-100 rounded-xl space-y-2">
+                  <div className="flex items-center gap-2 text-[#B24724]">
+                    <ShieldCheck className="h-5 w-5" />
+                    <span className="text-sm font-semibold">Secure checkout with Kora</span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    You'll be taken to Kora's secure payment page to pay by card, bank transfer or other available methods. Your donation is held in escrow and released to the project only as milestones are verified.
+                  </p>
+                </div>
+                <div className="space-y-1.5 text-xs font-mono text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <p>Project: {project.title}</p>
+                  <p>Amount: {amount.toLocaleString()}</p>
+                </div>
+                <div className="flex gap-3">
+                  <PillButton
+                    type="button"
+                    variant="muted"
+                    caps={false}
+                    onClick={() => setStep('amount')}
+                    disabled={isSubmitting}
+                    className="flex-1 py-2.5 px-4 text-xs font-mono"
+                  >
+                    Back
+                  </PillButton>
+                  <PillButton
+                    type="button"
+                    variant="success"
+                    caps={false}
+                    loading={isSubmitting}
+                    loadingMessage="Opening secure checkout"
+                    onClick={handlePay}
+                    Icon={CreditCard}
+                    className="flex-[2] py-2.5 px-4 text-xs font-mono"
+                  >
+                    Pay now
+                  </PillButton>
+                </div>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Mock payment for demo. Your ${amount.toLocaleString()} pledge will post to the project escrow immediately — no real card charged.
-              </p>
-            </div>
-            <div className="space-y-2 text-xs font-mono text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
-              <p>Card: •••• •••• •••• 4242</p>
-              <p>Project: {project.title}</p>
-              <p>Total: ${amount.toLocaleString()} USD</p>
-            </div>
-            <div className="flex gap-3">
-              <PillButton
-                type="button"
-                variant="muted"
-                caps={false}
-                onClick={() => setStep('amount')}
-                className="flex-1 py-2.5 px-4 text-xs font-mono"
-              >
-                Back
-              </PillButton>
-              <PillButton
-                type="button"
-                variant="success"
-                caps={false}
-                loading={isSubmitting}
-                loadingMessage="Securing your pledge"
-                onClick={handleMockPayment}
-                Icon={ShieldCheck}
-                className="flex-[2] py-2.5 px-4 text-xs font-mono"
-              >
-                Confirm mock payment
-              </PillButton>
-            </div>
           </div>
         )}
 

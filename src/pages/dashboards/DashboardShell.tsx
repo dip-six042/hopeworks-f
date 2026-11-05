@@ -166,9 +166,9 @@ export function DashboardShell({
     count: number;
     icon: typeof Briefcase;
   }[] = [
-    { id: 'all', label: 'All Assignments', count: pmProjects.length, icon: Briefcase },
-    { id: 'pending', label: 'Auditing Queue', count: pmAuditQueueCount, icon: Clock },
-    { id: 'completed', label: 'Fully Cleared', count: pmCompletedCount, icon: CheckCircle2 },
+    { id: 'all', label: 'All campaigns', count: pmProjects.length, icon: Briefcase },
+    { id: 'pending', label: 'To review', count: pmAuditQueueCount, icon: Clock },
+    { id: 'completed', label: 'Completed', count: pmCompletedCount, icon: CheckCircle2 },
   ];
   const adminVerificationCount = allUsers.filter((u) => u.verificationStatus === 'pending').length;
   const adminTotalCampaigns = projects.filter(
@@ -181,10 +181,10 @@ export function DashboardShell({
     count: number;
     icon: typeof UserCheck;
   }[] = [
-    { id: 'id_queue', label: 'Identity Registries Desk', count: adminVerificationCount, icon: UserCheck },
-    { id: 'campaign_desk', label: 'Campaign Launch Valuations', count: adminTotalCampaigns, icon: AppWindow },
-    { id: 'roles_desk', label: 'Civic Roles Desk', count: allUsers.length, icon: Users },
-    { id: 'audit_desk', label: 'Audit Trail Desk', count: auditLogs.length, icon: ScrollText },
+    { id: 'id_queue', label: 'ID checks', count: adminVerificationCount, icon: UserCheck },
+    { id: 'campaign_desk', label: 'Campaigns', count: adminTotalCampaigns, icon: AppWindow },
+    { id: 'roles_desk', label: 'User roles', count: allUsers.length, icon: Users },
+    { id: 'audit_desk', label: 'Activity log', count: auditLogs.length, icon: ScrollText },
   ];
 
   useEffect(() => {
@@ -309,10 +309,10 @@ export function DashboardShell({
   if (!user) return null;
 
   const tabs = [
-    { id: 'donor' as const, label: 'Donor Desk', roleName: 'donor', category: 'MY IMPACT', icon: Heart },
+    { id: 'donor' as const, label: 'My donations', roleName: 'donor', category: 'MY IMPACT', icon: Heart },
     { id: 'volunteer' as const, label: 'Volunteer', roleName: 'volunteer', category: 'MY IMPACT', icon: Award },
     { id: 'entrepreneur' as const, label: 'Campaigns', roleName: 'entrepreneur', category: 'PROJECTS', icon: Layers },
-    { id: 'project_manager' as const, label: 'Audits', roleName: 'project_manager', category: 'GOVERNANCE', icon: ClipboardCheck },
+    { id: 'project_manager' as const, label: 'Reviews', roleName: 'project_manager', category: 'GOVERNANCE', icon: ClipboardCheck },
     { id: 'admin' as const, label: 'Admin', roleName: 'admin', category: 'GOVERNANCE', icon: ShieldCheck },
   ];
 
@@ -478,7 +478,7 @@ export function DashboardShell({
             return (
               <div key={group}>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
-                  {group}
+                  {({ 'MY IMPACT': 'My activity', PROJECTS: 'Projects', GOVERNANCE: 'Oversight' } as Record<string, string>)[group] ?? group}
                 </p>
                 <div className="space-y-0.5">
                   {groupTabs.map((tab) => {
@@ -503,7 +503,7 @@ export function DashboardShell({
           {user.roles.includes('project_manager') && isPmDesk && (
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
-                Audit Desk
+                Review
               </p>
               <div className="space-y-0.5">
                 {pmDeskItems.map((item) => {

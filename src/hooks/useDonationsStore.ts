@@ -21,10 +21,12 @@ export function useDonationsStore() {
     refresh,
     listByProject: (projectId: string) => donations.filter(d => d.projectId === projectId),
     listByDonor: (donorId: string) => donations.filter(d => d.donorId === donorId),
-    createDonation: async (data: Omit<Donation, 'id' | 'createdAt' | 'donorId' | 'donorName'>) => {
-      const created = await apiFetch<Donation>('/api/donations', { method: 'POST', body: JSON.stringify(data) });
-      await refresh();
-      return created;
+    /** Creates a pending donation and returns the Kora checkout URL to redirect to. */
+    startCheckout: async (data: { projectId: string; amount: number; isAnonymous: boolean; message?: string }) => {
+      return apiFetch<{ reference: string; checkoutUrl: string }>('/api/donations/checkout', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
     },
   };
 }
