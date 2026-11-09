@@ -573,7 +573,7 @@ export function AdminDashboard({
                               type="button"
                               onClick={() => handleResumeCampaign(camp)}
                               disabled={resumingId === camp.id}
-                              className="w-full h-7 rounded-lg border border-emerald-300 bg-white text-[11px] font-medium text-emerald-700 hover:bg-emerald-50 cursor-pointer disabled:opacity-50"
+                              className="w-full h-7 rounded-lg border border-[#6EE7B7] bg-white text-[11px] font-medium text-[#047857] hover:bg-[#ECFDF5] cursor-pointer disabled:opacity-50"
                             >
                               {resumingId === camp.id ? 'Resuming…' : 'Resume'}
                             </button>

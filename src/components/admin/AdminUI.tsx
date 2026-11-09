@@ -100,7 +100,7 @@ export function Button({ children, onClick, variant = 'secondary', disabled, loa
 export function Badge({ children, tone = 'gray' }: { children: React.ReactNode; tone?: 'gray' | 'green' | 'amber' | 'red' | 'blue' }) {
   const t = {
     gray: 'bg-slate-100 text-slate-700',
-    green: 'bg-emerald-50 text-emerald-700',
+    green: 'bg-[#ECFDF5] text-[#047857]',
     amber: 'bg-amber-50 text-amber-800',
     red: 'bg-red-50 text-red-700',
     blue: 'bg-sky-50 text-sky-700',
