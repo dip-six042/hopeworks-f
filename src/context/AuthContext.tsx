@@ -40,7 +40,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profile = await apiFetch<UserProfile>('/api/auth/me');
       setUser(profile);
       return profile;
-    } catch {
+    } catch (err) {
+      if ((err as Error)?.message?.toLowerCase().includes('suspended')) {
+        try { sessionStorage.setItem('hw_suspended', (err as Error).message); } catch { /* ignore */ }
+        await supabase.auth.signOut();
+        setUser(null);
+        return null;
+      }
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) setUser(null);
       return null;
@@ -155,8 +161,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       if (error) throw new Error(error.message);
 
-      const profile = await ensureProfile();
+      const profile = await ensureProfile().catch(() => null);
       if (!profile) {
+        let suspended: string | null = null;
+        try { suspended = sessionStorage.getItem('hw_suspended'); sessionStorage.removeItem('hw_suspended'); } catch { /* ignore */ }
+        if (suspended) {
+          await supabase.auth.signOut();
+          throw new Error(suspended);
+        }
         throw new Error('Profile not found after login.');
       }
       if (profile.roles.includes('admin')) await refreshUsers();

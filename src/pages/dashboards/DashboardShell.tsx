@@ -53,6 +53,9 @@ import {
   Briefcase,
   Clock,
   CheckCircle2,
+  LayoutDashboard,
+  Megaphone,
+  FileChartColumn,
 } from 'lucide-react';
 
 type RoleTab = DeskTab;
@@ -157,7 +160,7 @@ export function DashboardShell({
   const panelKey = panel === 'desk' ? `desk-${activeTab}` : `${panel}-${selectedProjectId || ''}`;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [adminSegment, setAdminSegment] = useState<AdminSegment>('id_queue');
+  const [adminSegment, setAdminSegment] = useState<AdminSegment>('overview');
   const [pmSegment, setPmSegment] = useState<PmSegment>('all');
 
   const isAdminDesk = activeTab === 'admin';
@@ -193,10 +196,13 @@ export function DashboardShell({
     count: number;
     icon: typeof UserCheck;
   }[] = [
+    { id: 'overview', label: 'Overview', count: -1, icon: LayoutDashboard },
+    { id: 'users', label: 'Users', count: -1, icon: Users },
     { id: 'id_queue', label: 'ID checks', count: adminVerificationCount, icon: UserCheck },
     { id: 'campaign_desk', label: 'Campaigns', count: adminTotalCampaigns, icon: AppWindow },
-    { id: 'roles_desk', label: 'User roles', count: allUsers.length, icon: Users },
-    { id: 'audit_desk', label: 'Activity log', count: auditLogs.length, icon: ScrollText },
+    { id: 'announcements', label: 'Announcements', count: -1, icon: Megaphone },
+    { id: 'reports', label: 'Reports', count: -1, icon: FileChartColumn },
+    { id: 'audit_desk', label: 'Activity log', count: -1, icon: ScrollText },
   ];
 
   useEffect(() => {
@@ -575,11 +581,13 @@ export function DashboardShell({
                         <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[#B24724]' : 'text-slate-400'}`} />
                         <span className="truncate text-left leading-snug">{item.label}</span>
                       </span>
-                      <span
-                        className={`shrink-0 font-mono px-1.5 py-0.5 rounded-full text-[9px] font-bold ${adminSegmentBadgeClass(item.id)}`}
-                      >
-                        {item.count}
-                      </span>
+                      {item.count > 0 && (
+                        <span
+                          className={`shrink-0 font-mono px-1.5 py-0.5 rounded-full text-[9px] font-bold ${adminSegmentBadgeClass(item.id)}`}
+                        >
+                          {item.count}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
