@@ -9,6 +9,12 @@ import { PillButton } from '../../components/PillButton';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { useToast } from '../../context/ToastContext';
+import { AdminOverview } from '../../components/admin/AdminOverview';
+import { AdminUsers } from '../../components/admin/AdminUsers';
+import { AdminAnnouncements } from '../../components/admin/AdminAnnouncements';
+import { AdminReports } from '../../components/admin/AdminReports';
+import { ReasonDialog } from '../../components/admin/AdminUI';
+import { adminApi } from '../../components/admin/adminApi';
 import { getGovIdUrl } from '../../lib/apiClient';
 import { Project } from '../../types';
 import { 
@@ -69,7 +75,15 @@ export const CIVIC_ROLES = {
   }
 } as const;
 
-export type AdminSegment = 'id_queue' | 'campaign_desk' | 'roles_desk' | 'audit_desk';
+export type AdminSegment =
+  | 'overview'
+  | 'users'
+  | 'id_queue'
+  | 'campaign_desk'
+  | 'announcements'
+  | 'reports'
+  | 'audit_desk'
+  | 'roles_desk';
 
 interface AdminDashboardProps {
   activeSegment?: AdminSegment;
@@ -82,7 +96,7 @@ export function AdminDashboard({
 }: AdminDashboardProps = {}) {
   const { users, verifyUser, allPms, setUserRoles, refreshUsers } = useAuth();
   const { toast } = useToast();
-  const { projects, updateCampaign, deleteCampaign } = useProjectsStore();
+  const { projects, updateCampaign, deleteCampaign, refresh: refreshProjects } = useProjectsStore();
   const { assignProject, unassignProject, getForProject } = useAssignmentsStore();
   const { logs: auditLogs, loading: auditLogsLoading, refresh: refreshAuditLogs } = useAuditLogsStore(true);
 
@@ -90,12 +104,15 @@ export function AdminDashboard({
   const [resettingPmProjectId, setResettingPmProjectId] = useState<string | null>(null);
   const [selectedPmMap, setSelectedPmMap] = useState<Record<string, string>>({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [internalSegment, setInternalSegment] = useState<AdminSegment>('id_queue');
+  const [internalSegment, setInternalSegment] = useState<AdminSegment>('overview');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [campaignToDelete, setCampaignToDelete] = useState<Project | null>(null);
   const [deletingCampaign, setDeletingCampaign] = useState(false);
   const [verifyingUserId, setVerifyingUserId] = useState<string | null>(null);
   const [approvingCampaignId, setApprovingCampaignId] = useState<string | null>(null);
+  const [campaignToPause, setCampaignToPause] = useState<Project | null>(null);
+  const [pausing, setPausing] = useState(false);
+  const [resumingId, setResumingId] = useState<string | null>(null);
 
   const activeSegment = controlledSegment ?? internalSegment;
   const setActiveSegment = (segment: AdminSegment) => {
@@ -123,6 +140,34 @@ export function AdminDashboard({
   );
 
   useEffect(() => { refreshUsers(); }, [refreshUsers]);
+
+  const handlePauseCampaign = async (reason: string) => {
+    if (!campaignToPause) return;
+    setPausing(true);
+    try {
+      await adminApi.pauseCampaign(campaignToPause.id, reason);
+      toast.success(`"${campaignToPause.title}" is paused.`);
+      setCampaignToPause(null);
+      await refreshProjects();
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setPausing(false);
+    }
+  };
+
+  const handleResumeCampaign = async (camp: Project) => {
+    setResumingId(camp.id);
+    try {
+      await adminApi.resumeCampaign(camp.id);
+      toast.success(`"${camp.title}" is live again.`);
+      await refreshProjects();
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setResumingId(null);
+    }
+  };
 
   useEffect(() => {
     setSearchTerm('');
@@ -215,66 +260,34 @@ export function AdminDashboard({
   };
 
 
+  if (activeSegment === 'overview') {
+    return <AdminOverview onGo={(seg) => setActiveSegment(seg)} />;
+  }
+  if (activeSegment === 'users' || activeSegment === 'roles_desk') return <AdminUsers />;
+  if (activeSegment === 'announcements') return <AdminAnnouncements />;
+  if (activeSegment === 'reports') return <AdminReports />;
+
+  const legacyTitles: Partial<Record<AdminSegment, [string, string]>> = {
+    id_queue: ['ID checks', 'Check documents from campaign owners and Project Managers.'],
+    campaign_desk: ['Campaigns', 'Approve, assign a Project Manager, pause or resume.'],
+    audit_desk: ['Activity log', 'Everything that has happened on the platform.'],
+  };
+  const [pageTitle, pageDesc] = legacyTitles[activeSegment] ?? ['Admin', ''];
+
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={springDashboard} className="space-y-6 text-xs select-none">
-      
-      {/* 1. TOP METRICS BLOCK */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="space-y-2">
-            <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>ID checks</span>
-              {verificationQueue.length > 0 && (
-                <span className="text-[10px] text-amber-600 bg-amber-50 px-1 py-0.2 rounded-md font-bold font-mono animate-pulse">Required</span>
-              )}
-            </div>
-            <p className="font-serif font-black text-2xl text-slate-900">{verificationQueue.length} Pending</p>
-            <p className="text-[10px] text-slate-400 font-mono">ID checks waiting</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="space-y-2">
-            <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Campaigns</span>
-              {pendingCampaigns.length > 0 && (
-                <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1 py-0.2 rounded-md font-bold font-mono">Action needed</span>
-              )}
-            </div>
-            <p className="font-serif font-black text-2xl text-slate-900">{totalManagedCampaigns} Campaigns</p>
-            <p className="text-[10px] text-slate-400 font-mono">
-              {pendingCampaigns.length} awaiting approval · {activeCampaigns.length} live
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="space-y-2">
-            <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Held in escrow</span>
-            </div>
-            <p className="font-serif font-black text-2xl text-emerald-800">${escrowHeld.toLocaleString()}</p>
-            <p className="text-[10px] text-slate-400 font-mono">Raised minus approved milestones</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="space-y-2">
-            <div className="flex items-center gap-1.5 text-slate-400 font-medium">
-              <span>Total raised</span>
-            </div>
-            <p className="font-serif font-black text-2xl text-teal-800">${totalRaised.toLocaleString()}</p>
-            <p className="text-[10px] text-slate-400 font-mono">Across all campaigns</p>
-          </div>
-        </div>
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight text-slate-900">{pageTitle}</h1>
+        <p className="text-sm text-slate-500 mt-0.5">{pageDesc}</p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+      
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
         {/* CONTROL ACTIONS MIDDLE LAYER */}
-        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50/50">
+        <div className="p-3 border-b border-slate-100 flex items-center gap-3">
           
-          <div className="relative w-full sm:max-w-xs">
+          <div className="relative w-full sm:max-w-sm">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
               <Search className="h-3.5 w-3.5" />
             </span>
@@ -282,21 +295,11 @@ export function AdminDashboard({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search administration queue..."
-              className="w-full text-xs pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#B24724]"
+              placeholder="Search"
+              className="w-full h-8 text-sm pl-8 pr-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-300"
             />
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto justify-end">
-            <PillButton variant="muted" caps={false} className="px-3 py-2 text-xs">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-slate-400" />
-              Filter
-            </PillButton>
-            <PillButton variant="muted" caps={false} className="px-3 py-2 text-xs">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
-              Sort
-            </PillButton>
-          </div>
         </div>
 
         {/* Segment 1: Identity Queue table */}
@@ -304,7 +307,7 @@ export function AdminDashboard({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
                   <th className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
@@ -313,11 +316,11 @@ export function AdminDashboard({
                       className="rounded text-[#B24724] focus:ring-[#B24724]"
                     />
                   </th>
-                  <th className="py-3 px-4">USER</th>
-                  <th className="py-3 px-4">EMAIL</th>
-                  <th className="py-3 px-4">ID DOCUMENT</th>
-                  <th className="py-3 px-4">STATUS</th>
-                  <th className="py-3 px-4 text-right">ACTION</th>
+                  <th className="py-3 px-4">User</th>
+                  <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">ID document</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -437,7 +440,7 @@ export function AdminDashboard({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
                   <th className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
@@ -446,13 +449,13 @@ export function AdminDashboard({
                       className="rounded text-[#B24724] focus:ring-[#B24724]"
                     />
                   </th>
-                  <th className="py-3 px-4">CAMPAIGN</th>
-                  <th className="py-3 px-4">STATUS</th>
-                  <th className="py-3 px-4">OWNER</th>
-                  <th className="py-3 px-4">GOAL</th>
-                  <th className="py-3 px-4">PROJECT MANAGER</th>
-                  <th className="py-3 px-4">ACTION</th>
-                  <th className="py-3 px-4 w-28">DELETE</th>
+                  <th className="py-3 px-4">Campaign</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4">Owner</th>
+                  <th className="py-3 px-4">Goal</th>
+                  <th className="py-3 px-4">Project Manager</th>
+                  <th className="py-3 px-4">Action</th>
+                  <th className="py-3 px-4 w-28">Delete</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -546,10 +549,28 @@ export function AdminDashboard({
                           >
                             {!currentAssignment ? 'Auditor Required first' : 'Authorize Campaign Release'}
                           </PillButton>
+                        ) : camp.status === 'active' ? (
+                          <button
+                            type="button"
+                            onClick={() => setCampaignToPause(camp)}
+                            className="w-full h-7 rounded-lg border border-slate-300 bg-white text-[11px] font-medium text-slate-700 hover:bg-slate-50 cursor-pointer"
+                          >
+                            Pause
+                          </button>
+                        ) : camp.status === 'paused' ? (
+                          <div className="space-y-1">
+                            <button
+                              type="button"
+                              onClick={() => handleResumeCampaign(camp)}
+                              disabled={resumingId === camp.id}
+                              className="w-full h-7 rounded-lg border border-[#6EE7B7] bg-white text-[11px] font-medium text-[#047857] hover:bg-[#ECFDF5] cursor-pointer disabled:opacity-50"
+                            >
+                              {resumingId === camp.id ? 'Resuming…' : 'Resume'}
+                            </button>
+                            {camp.pauseReason && <p className="text-[10px] text-slate-500 leading-snug">Paused: {camp.pauseReason}</p>}
+                          </div>
                         ) : (
-                          <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">
-                            {camp.status === 'active' ? 'Live' : camp.status === 'pending' ? 'Waiting for approval' : camp.status}
-                          </span>
+                          <span className="text-[11px] text-slate-500 capitalize">{camp.status}</span>
                         )}
                       </td>
 
@@ -596,12 +617,12 @@ export function AdminDashboard({
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={springDashboard} className="overflow-x-auto text-xs">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
-                    <th className="py-3 px-4">TIMESTAMP</th>
-                    <th className="py-3 px-4">ACTOR</th>
-                    <th className="py-3 px-4">ACTION</th>
-                    <th className="py-3 px-4">ENTITY</th>
-                    <th className="py-3 px-4">RATIONALE</th>
+                  <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
+                    <th className="py-3 px-4">When</th>
+                    <th className="py-3 px-4">Who</th>
+                    <th className="py-3 px-4">Action</th>
+                    <th className="py-3 px-4">What</th>
+                    <th className="py-3 px-4">Details</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -650,11 +671,11 @@ export function AdminDashboard({
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={springDashboard} className="overflow-x-auto text-xs">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
-                  <th className="py-3 px-4">REGISTERED CITIZEN</th>
-                  <th className="py-3 px-4">EMAIL PATHWAY</th>
-                  <th className="py-3 px-4">CURRENT AUTHORIZED ROLES</th>
-                  <th className="py-3 px-4">ROLE PERMISSIONS PANEL</th>
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
+                  <th className="py-3 px-4">User</th>
+                  <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">Roles</th>
+                  <th className="py-3 px-4">Change roles</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -745,8 +766,9 @@ export function AdminDashboard({
 
       </div>
 
-      {/* SYSTEM REGIME SAFEGUARD RULES BANNER */}
-      <div className="bg-slate-50 p-5 border border-slate-200 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+      {/* Reminder shown on the approval pages only */}
+      {(activeSegment === 'campaign_desk' || activeSegment === 'id_queue') && (
+      <div className="bg-white p-4 border border-slate-200 rounded-xl flex items-center gap-4">
         <div className="flex items-center gap-3.5">
           <div className="h-9 w-9 rounded-xl bg-orange-50 text-[#B24724] flex items-center justify-center shrink-0">
             <ShieldCheck className="h-5 w-5" />
@@ -757,6 +779,17 @@ export function AdminDashboard({
           </div>
         </div>
       </div>
+      )}
+
+      <ReasonDialog
+        open={!!campaignToPause}
+        title={`Pause "${campaignToPause?.title ?? ''}"?`}
+        message="It stops taking donations and disappears from the public list. The owner is told why. Nothing is deleted."
+        confirmLabel="Pause campaign"
+        busy={pausing}
+        onCancel={() => setCampaignToPause(null)}
+        onConfirm={handlePauseCampaign}
+      />
 
       <ConfirmDialog
         open={!!campaignToDelete}

@@ -41,7 +41,8 @@ export interface Project {
   fundingTarget: number;
   fundingRaised: number;
   coverUrl: string;
-  status: 'pending' | 'active' | 'completed' | 'rejected';
+  status: 'pending' | 'active' | 'completed' | 'rejected' | 'paused';
+  pauseReason?: string;
   volunteerSlots: number;
   volunteersFilled: number;
   volunteerCompensation: 'unpaid' | 'paid';

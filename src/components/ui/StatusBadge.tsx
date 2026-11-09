@@ -1,6 +1,6 @@
 import React from 'react';
 
-type StatusType = 'pending' | 'in_progress' | 'submitted' | 'approved' | 'rejected' | 'active' | 'completed' | 'none';
+type StatusType = 'pending' | 'in_progress' | 'submitted' | 'approved' | 'rejected' | 'active' | 'completed' | 'none' | 'paused';
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -41,6 +41,11 @@ export function StatusBadge({ status }: StatusBadgeProps) {
       bg = 'bg-teal-50 text-teal-800 border-teal-200/60';
       dot = 'bg-teal-500';
       label = 'Live';
+      break;
+    case 'paused':
+      bg = 'bg-amber-50 text-amber-800 border-amber-200/60';
+      dot = 'bg-amber-500';
+      label = 'Paused';
       break;
     case 'completed':
       bg = 'bg-indigo-50 text-indigo-800 border-indigo-200/60';
