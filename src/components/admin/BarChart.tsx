@@ -24,6 +24,14 @@ export function BarChart({ data, format, label }: {
 
   const fmtDay = (iso: string) => new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 
+  if (total === 0) {
+    return (
+      <div className="h-40 flex items-center justify-center text-sm text-slate-400 border border-dashed border-slate-200 rounded-lg">
+        Nothing yet in the last 30 days
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-40" role="img" aria-label={`${label}, last 30 days, total ${format(total)}`}>

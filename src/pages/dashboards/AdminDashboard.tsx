@@ -282,12 +282,12 @@ export function AdminDashboard({
       </div>
 
       
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
         {/* CONTROL ACTIONS MIDDLE LAYER */}
-        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50/50">
+        <div className="p-3 border-b border-slate-100 flex items-center gap-3">
           
-          <div className="relative w-full sm:max-w-xs">
+          <div className="relative w-full sm:max-w-sm">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
               <Search className="h-3.5 w-3.5" />
             </span>
@@ -295,21 +295,11 @@ export function AdminDashboard({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search administration queue..."
-              className="w-full text-xs pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#B24724]"
+              placeholder="Search"
+              className="w-full h-8 text-sm pl-8 pr-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-300"
             />
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto justify-end">
-            <PillButton variant="muted" caps={false} className="px-3 py-2 text-xs">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-slate-400" />
-              Filter
-            </PillButton>
-            <PillButton variant="muted" caps={false} className="px-3 py-2 text-xs">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
-              Sort
-            </PillButton>
-          </div>
         </div>
 
         {/* Segment 1: Identity Queue table */}
@@ -317,7 +307,7 @@ export function AdminDashboard({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
                   <th className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
@@ -326,11 +316,11 @@ export function AdminDashboard({
                       className="rounded text-[#B24724] focus:ring-[#B24724]"
                     />
                   </th>
-                  <th className="py-3 px-4">USER</th>
-                  <th className="py-3 px-4">EMAIL</th>
-                  <th className="py-3 px-4">ID DOCUMENT</th>
-                  <th className="py-3 px-4">STATUS</th>
-                  <th className="py-3 px-4 text-right">ACTION</th>
+                  <th className="py-3 px-4">User</th>
+                  <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">ID document</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -450,7 +440,7 @@ export function AdminDashboard({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
                   <th className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
@@ -459,13 +449,13 @@ export function AdminDashboard({
                       className="rounded text-[#B24724] focus:ring-[#B24724]"
                     />
                   </th>
-                  <th className="py-3 px-4">CAMPAIGN</th>
-                  <th className="py-3 px-4">STATUS</th>
-                  <th className="py-3 px-4">OWNER</th>
-                  <th className="py-3 px-4">GOAL</th>
-                  <th className="py-3 px-4">PROJECT MANAGER</th>
-                  <th className="py-3 px-4">ACTION</th>
-                  <th className="py-3 px-4 w-28">DELETE</th>
+                  <th className="py-3 px-4">Campaign</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4">Owner</th>
+                  <th className="py-3 px-4">Goal</th>
+                  <th className="py-3 px-4">Project Manager</th>
+                  <th className="py-3 px-4">Action</th>
+                  <th className="py-3 px-4 w-28">Delete</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -627,12 +617,12 @@ export function AdminDashboard({
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={springDashboard} className="overflow-x-auto text-xs">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
-                    <th className="py-3 px-4">TIMESTAMP</th>
-                    <th className="py-3 px-4">ACTOR</th>
-                    <th className="py-3 px-4">ACTION</th>
-                    <th className="py-3 px-4">ENTITY</th>
-                    <th className="py-3 px-4">RATIONALE</th>
+                  <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
+                    <th className="py-3 px-4">When</th>
+                    <th className="py-3 px-4">Who</th>
+                    <th className="py-3 px-4">Action</th>
+                    <th className="py-3 px-4">What</th>
+                    <th className="py-3 px-4">Details</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -681,11 +671,11 @@ export function AdminDashboard({
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={springDashboard} className="overflow-x-auto text-xs">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-[10px] font-mono font-black text-slate-400 tracking-wider">
-                  <th className="py-3 px-4">REGISTERED CITIZEN</th>
-                  <th className="py-3 px-4">EMAIL PATHWAY</th>
-                  <th className="py-3 px-4">CURRENT AUTHORIZED ROLES</th>
-                  <th className="py-3 px-4">ROLE PERMISSIONS PANEL</th>
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-xs font-medium text-slate-500">
+                  <th className="py-3 px-4">User</th>
+                  <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">Roles</th>
+                  <th className="py-3 px-4">Change roles</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -776,8 +766,9 @@ export function AdminDashboard({
 
       </div>
 
-      {/* SYSTEM REGIME SAFEGUARD RULES BANNER */}
-      <div className="bg-slate-50 p-5 border border-slate-200 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+      {/* Reminder shown on the approval pages only */}
+      {(activeSegment === 'campaign_desk' || activeSegment === 'id_queue') && (
+      <div className="bg-white p-4 border border-slate-200 rounded-xl flex items-center gap-4">
         <div className="flex items-center gap-3.5">
           <div className="h-9 w-9 rounded-xl bg-orange-50 text-[#B24724] flex items-center justify-center shrink-0">
             <ShieldCheck className="h-5 w-5" />
@@ -788,6 +779,7 @@ export function AdminDashboard({
           </div>
         </div>
       </div>
+      )}
 
       <ReasonDialog
         open={!!campaignToPause}
