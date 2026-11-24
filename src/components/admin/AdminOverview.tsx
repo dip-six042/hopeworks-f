@@ -27,11 +27,11 @@ export function AdminOverview({ onGo }: { onGo: Go }) {
 
   const todo = data
     ? [
-        { n: data.ids_to_check, text: 'ID documents to check', go: () => onGo('id_queue') },
-        { n: data.pending_campaigns, text: 'campaigns waiting for approval', go: () => onGo('campaign_desk') },
-        { n: data.campaigns_without_pm, text: 'live campaigns with no Project Manager', go: () => onGo('campaign_desk') },
-        { n: data.milestones_waiting, text: 'milestones waiting for a Project Manager’s review', go: () => onGo('milestones') },
-        { n: data.paused_campaigns, text: 'paused campaigns', go: () => onGo('campaign_desk') },
+        { n: data.ids_to_check, text: data.ids_to_check === 1 ? 'ID document to check' : 'ID documents to check', go: () => onGo('id_queue') },
+        { n: data.pending_campaigns, text: data.pending_campaigns === 1 ? 'campaign waiting for approval' : 'campaigns waiting for approval', go: () => onGo('campaign_desk') },
+        { n: data.campaigns_without_pm, text: data.campaigns_without_pm === 1 ? 'live campaign with no Project Manager' : 'live campaigns with no Project Manager', go: () => onGo('campaign_desk') },
+        { n: data.milestones_waiting, text: data.milestones_waiting === 1 ? 'milestone waiting for a Project Manager’s review' : 'milestones waiting for a Project Manager’s review', go: () => onGo('milestones') },
+        { n: data.paused_campaigns, text: data.paused_campaigns === 1 ? 'paused campaign' : 'paused campaigns', go: () => onGo('campaign_desk') },
       ].filter((t) => t.n > 0)
     : [];
 

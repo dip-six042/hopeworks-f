@@ -509,7 +509,7 @@ export function AdminDashboard({
                       </td>
 
                       <td className="py-3 px-4">
-                        <StatusBadge status={camp.status} />
+                        <StatusBadge status={camp.status} kind="campaign" />
                       </td>
 
                       <td className="py-3 px-4 text-xs font-bold text-slate-600">
