@@ -13,6 +13,8 @@ import { AdminOverview } from '../../components/admin/AdminOverview';
 import { AdminUsers } from '../../components/admin/AdminUsers';
 import { AdminAnnouncements } from '../../components/admin/AdminAnnouncements';
 import { AdminReports } from '../../components/admin/AdminReports';
+import { AdminDonations } from '../../components/admin/AdminDonations';
+import { AdminMilestones } from '../../components/admin/AdminMilestones';
 import { ReasonDialog } from '../../components/admin/AdminUI';
 import { adminApi } from '../../components/admin/adminApi';
 import { getGovIdUrl } from '../../lib/apiClient';
@@ -80,6 +82,8 @@ export type AdminSegment =
   | 'users'
   | 'id_queue'
   | 'campaign_desk'
+  | 'donations'
+  | 'milestones'
   | 'announcements'
   | 'reports'
   | 'audit_desk'
@@ -111,6 +115,8 @@ export function AdminDashboard({
   const [verifyingUserId, setVerifyingUserId] = useState<string | null>(null);
   const [approvingCampaignId, setApprovingCampaignId] = useState<string | null>(null);
   const [campaignToPause, setCampaignToPause] = useState<Project | null>(null);
+  const [campaignToReject, setCampaignToReject] = useState<Project | null>(null);
+  const [rejecting, setRejecting] = useState(false);
   const [pausing, setPausing] = useState(false);
   const [resumingId, setResumingId] = useState<string | null>(null);
 
@@ -156,6 +162,21 @@ export function AdminDashboard({
     }
   };
 
+  const handleRejectCampaign = async (reason: string) => {
+    if (!campaignToReject) return;
+    setRejecting(true);
+    try {
+      await adminApi.rejectCampaign(campaignToReject.id, reason);
+      toast.success(`"${campaignToReject.title}" was not approved. The owner has been told why.`);
+      setCampaignToReject(null);
+      await refreshProjects();
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setRejecting(false);
+    }
+  };
+
   const handleResumeCampaign = async (camp: Project) => {
     setResumingId(camp.id);
     try {
@@ -193,7 +214,7 @@ export function AdminDashboard({
     setApprovingCampaignId(projectId);
     try {
       await updateCampaign(projectId, { status: 'active' });
-      toast.success('Campaign authorized and released live.');
+      toast.success('Campaign approved. It is live now.');
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to approve campaign.');
     } finally {
@@ -266,6 +287,8 @@ export function AdminDashboard({
   if (activeSegment === 'users' || activeSegment === 'roles_desk') return <AdminUsers />;
   if (activeSegment === 'announcements') return <AdminAnnouncements />;
   if (activeSegment === 'reports') return <AdminReports />;
+  if (activeSegment === 'donations') return <AdminDonations />;
+  if (activeSegment === 'milestones') return <AdminMilestones />;
 
   const legacyTitles: Partial<Record<AdminSegment, [string, string]>> = {
     id_queue: ['ID checks', 'Check documents from campaign owners and Project Managers.'],
@@ -538,17 +561,26 @@ export function AdminDashboard({
 
                       <td className="py-3 px-4">
                         {camp.status === 'pending' ? (
+                          <>
                           <PillButton
                             variant="success"
                             caps={false}
                             onClick={() => handleApproveCampaign(camp.id)}
                             loading={approvingCampaignId === camp.id}
-                            loadingMessage="Authorizing campaign..."
+                            loadingMessage="Approving…"
                             disabled={!currentAssignment || (!!approvingCampaignId && approvingCampaignId !== camp.id)}
                             className="w-full py-1.5 text-[9px] font-mono"
                           >
-                            {!currentAssignment ? 'Auditor Required first' : 'Authorize Campaign Release'}
+                            {!currentAssignment ? 'Assign a PM first' : 'Approve'}
                           </PillButton>
+                          <button
+                            type="button"
+                            onClick={() => setCampaignToReject(camp)}
+                            className="mt-1.5 w-full h-7 rounded-lg border border-red-300 bg-white text-[11px] font-medium text-red-700 hover:bg-red-50 cursor-pointer"
+                          >
+                            Reject
+                          </button>
+                          </>
                         ) : camp.status === 'active' ? (
                           <button
                             type="button"
@@ -780,6 +812,17 @@ export function AdminDashboard({
         </div>
       </div>
       )}
+
+      <ReasonDialog
+        open={!!campaignToReject}
+        title={`Reject "${campaignToReject?.title ?? ''}"?`}
+        message="The campaign won't go live. The owner sees your reason so they know what to fix."
+        confirmLabel="Reject campaign"
+        danger
+        busy={rejecting}
+        onCancel={() => setCampaignToReject(null)}
+        onConfirm={handleRejectCampaign}
+      />
 
       <ReasonDialog
         open={!!campaignToPause}

@@ -195,7 +195,7 @@ const PRIVACY: Section[] = [
         <UL items={[
           'Korapay (Kora) — payment processing.',
           'Supabase — authentication, database and file storage.',
-          'Render and Vercel — application hosting.',
+          'Render and Vercel — application hosting and anonymous visit statistics.',
           'Law enforcement or regulators where required by law.',
         ]} />
         <P>
@@ -253,7 +253,7 @@ const PRIVACY: Section[] = [
     title: '9. Cookies and local storage',
     body: (
       <P>
-        We use essential browser storage to keep you signed in and remember your place in the app. We do not use advertising or third-party tracking cookies.
+        We use essential browser storage to keep you signed in and remember your place in the app. We count page visits with Vercel Web Analytics, which does not use cookies or identify you personally. We do not use advertising or third-party tracking cookies.
       </P>
     ),
   },

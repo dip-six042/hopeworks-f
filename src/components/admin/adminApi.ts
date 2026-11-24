@@ -74,6 +74,49 @@ export interface MonthlyRow {
   released: number;
 }
 
+export interface AdminDonation {
+  id: string;
+  createdAt: string;
+  paidAt?: string;
+  projectId: string;
+  projectName: string;
+  donorId: string;
+  donorName: string;
+  isAnonymous: boolean;
+  amount: number;
+  fee?: number;
+  currency?: string;
+  status: 'paid' | 'pending' | 'failed';
+  paymentReference?: string;
+  message?: string;
+}
+
+export interface AdminDonationList {
+  total: number;
+  page: number;
+  pageSize: number;
+  counts: { paid: number; pending: number; failed: number };
+  donations: AdminDonation[];
+}
+
+export interface AdminMilestone {
+  id: string;
+  projectId: string;
+  projectTitle: string;
+  projectStatus?: string;
+  ownerName?: string;
+  number: number;
+  title: string;
+  cost: number;
+  status: 'submitted' | 'in_progress' | 'rejected';
+  since?: string;
+  daysWaiting?: number;
+  evidenceCount: number;
+  feedback?: string;
+  pmId?: string;
+  pmName?: string;
+}
+
 export const adminApi = {
   overview: () => apiFetch<AdminOverview>('/api/admin/overview'),
   users: (q: { search?: string; role?: string; status?: string; sort?: string; page?: number; pageSize?: number }) => {
@@ -96,6 +139,17 @@ export const adminApi = {
   announce: (title: string, message: string, role: string) =>
     apiFetch<{ sent: number }>('/api/admin/announcements', { method: 'POST', body: JSON.stringify({ title, message, role: role || null }) }),
   monthly: () => apiFetch<MonthlyRow[]>('/api/admin/reports/monthly'),
+  donations: (q: { search?: string; status?: string; page?: number; pageSize?: number }) => {
+    const params = new URLSearchParams();
+    Object.entries(q).forEach(([k, v]) => { if (v !== undefined && v !== '') params.set(k, String(v)); });
+    return apiFetch<AdminDonationList>(`/api/admin/donations?${params.toString()}`);
+  },
+  milestones: (status = '') => apiFetch<AdminMilestone[]>(`/api/admin/milestones${status ? `?status=${status}` : ''}`),
+  rejectCampaign: (id: string, reason: string) =>
+    apiFetch(`/api/projects/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'rejected', reason }) }),
+  assignPm: (projectId: string, pmId: string, pmName: string) =>
+    apiFetch('/api/assignments', { method: 'POST', body: JSON.stringify({ projectId, pmId, pmName }) }),
+  unassignPm: (projectId: string) => apiFetch(`/api/assignments/${projectId}`, { method: 'DELETE' }),
 };
 
 /** Download a CSV export (needs the auth header, so it can't be a plain link). */
