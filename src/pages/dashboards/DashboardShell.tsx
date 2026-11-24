@@ -56,6 +56,8 @@ import {
   LayoutDashboard,
   Megaphone,
   FileChartColumn,
+  Flag,
+  HandCoins,
 } from 'lucide-react';
 
 type RoleTab = DeskTab;
@@ -200,6 +202,8 @@ export function DashboardShell({
     { id: 'users', label: 'Users', count: -1, icon: Users },
     { id: 'id_queue', label: 'ID checks', count: adminVerificationCount, icon: UserCheck },
     { id: 'campaign_desk', label: 'Campaigns', count: adminTotalCampaigns, icon: AppWindow },
+    { id: 'milestones', label: 'Milestones', count: -1, icon: Flag },
+    { id: 'donations', label: 'Donations', count: -1, icon: HandCoins },
     { id: 'announcements', label: 'Announcements', count: -1, icon: Megaphone },
     { id: 'reports', label: 'Reports', count: -1, icon: FileChartColumn },
     { id: 'audit_desk', label: 'Activity log', count: -1, icon: ScrollText },

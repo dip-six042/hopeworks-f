@@ -4,7 +4,7 @@ import { adminApi, money, type AdminOverview as Overview } from './adminApi';
 import { AdminPage, Button, Card, StatTile } from './AdminUI';
 import { BarChart } from './BarChart';
 
-type Go = (segment: 'users' | 'id_queue' | 'campaign_desk' | 'audit_desk') => void;
+type Go = (segment: 'users' | 'id_queue' | 'campaign_desk' | 'audit_desk' | 'milestones' | 'donations') => void;
 
 export function AdminOverview({ onGo }: { onGo: Go }) {
   const [data, setData] = useState<Overview | null>(null);
@@ -27,11 +27,11 @@ export function AdminOverview({ onGo }: { onGo: Go }) {
 
   const todo = data
     ? [
-        { n: data.ids_to_check, text: 'ID documents to check', go: () => onGo('id_queue') },
-        { n: data.pending_campaigns, text: 'campaigns waiting for approval', go: () => onGo('campaign_desk') },
-        { n: data.campaigns_without_pm, text: 'live campaigns with no Project Manager', go: () => onGo('campaign_desk') },
-        { n: data.milestones_waiting, text: 'milestones waiting for a Project Manager’s review', go: () => onGo('campaign_desk') },
-        { n: data.paused_campaigns, text: 'paused campaigns', go: () => onGo('campaign_desk') },
+        { n: data.ids_to_check, text: data.ids_to_check === 1 ? 'ID document to check' : 'ID documents to check', go: () => onGo('id_queue') },
+        { n: data.pending_campaigns, text: data.pending_campaigns === 1 ? 'campaign waiting for approval' : 'campaigns waiting for approval', go: () => onGo('campaign_desk') },
+        { n: data.campaigns_without_pm, text: data.campaigns_without_pm === 1 ? 'live campaign with no Project Manager' : 'live campaigns with no Project Manager', go: () => onGo('campaign_desk') },
+        { n: data.milestones_waiting, text: data.milestones_waiting === 1 ? 'milestone waiting for a Project Manager’s review' : 'milestones waiting for a Project Manager’s review', go: () => onGo('milestones') },
+        { n: data.paused_campaigns, text: data.paused_campaigns === 1 ? 'paused campaign' : 'paused campaigns', go: () => onGo('campaign_desk') },
       ].filter((t) => t.n > 0)
     : [];
 
@@ -53,7 +53,7 @@ export function AdminOverview({ onGo }: { onGo: Go }) {
         <StatTile label="Live campaigns" value={data ? data.live_campaigns : '—'}
           hint={data ? `${data.pending_campaigns} waiting · ${data.paused_campaigns} paused` : undefined} onClick={() => onGo('campaign_desk')} />
         <StatTile label="Total raised" value={data ? money(data.total_raised) : '—'}
-          hint={data ? `${money(data.raised_30d)} in the last 30 days` : undefined} />
+          hint={data ? `${money(data.raised_30d)} in the last 30 days` : undefined} onClick={() => onGo('donations')} />
         <StatTile label="Waiting to be released" value={data ? money(Math.max(0, data.total_raised - data.released_total)) : '—'}
           hint={data ? `${money(data.released_total)} released so far` : undefined} />
       </div>

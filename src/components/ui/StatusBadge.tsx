@@ -4,9 +4,11 @@ type StatusType = 'pending' | 'in_progress' | 'submitted' | 'approved' | 'reject
 
 interface StatusBadgeProps {
   status: StatusType;
+  /** 'campaign' uses campaign wording (e.g. "Rejected" instead of "Revision Requested"). */
+  kind?: 'milestone' | 'campaign';
 }
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+export function StatusBadge({ status, kind = 'milestone' }: StatusBadgeProps) {
   let bg = 'bg-gray-100 text-gray-800 border-gray-200';
   let dot = 'bg-gray-400';
   let label = status.replace('_', ' ');
@@ -35,7 +37,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     case 'rejected':
       bg = 'bg-rose-50 text-rose-800 border-rose-200/60';
       dot = 'bg-rose-500';
-      label = 'Revision Requested';
+      label = kind === 'campaign' ? 'Rejected' : 'Revision Requested';
       break;
     case 'active':
       bg = 'bg-teal-50 text-teal-800 border-teal-200/60';
